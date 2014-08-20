@@ -1,6 +1,6 @@
 define({
-	name    : "text",
-	main    : "text",
+	name    : "list",
+	main    : "list",
 	module  : [],
 	package : [
 		"library/morph"

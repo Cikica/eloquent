@@ -2,14 +2,159 @@ define({
 
 	define : {
 		require : [
+			"morph",
+			"event_master",
+			"transistor",
 			"text",
+			"shumput",
+			"list",
 		]
 	},
 
-	make : function () {
-		var body, event_circle
+	make : function ( define ) {
+		var self, body, event_circle, part_name_to_package_name
 
-		console.log("entrude young messenger")
-	}
+		self                      = this
+		part_name_to_package_name = {
+			"text"      : "text",
+			"input"     : "shumput",
+			"list"      : "list",
+		}
+		body                 = this.library.transistor.make( this.define_body({
+			part_name_to_package_name : part_name_to_package_name,
+			class_name                : define.class_name,
+			part                      : define.part,
+		}))
+		event_circle         = Object.create( this.library.event_master ).make({
+			state  : {
+				option : this.define_state_option({
+					part_name_to_package_name : part_name_to_package_name,
+					part                      : define.part,
+				}),
+			},
+			events : this.define_event({
+				part_name_to_package_name : part_name_to_package_name,
+				class_name                : define.class_name,
+				used_package              : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
+				with                      : { 
+					body : body.body
+				}
+			})
+		})
+		event_circle.add_listener( this.define_listener({
+			class_name                : define.class_name,
+			part_name_to_package_name : part_name_to_package_name,
+			with                      : {}
+		}))
 
+		body.append(
+			define.append_to
+		)
+	},
+
+	define_state_option : function ( define ) { 
+		var self = this
+		return this.library.morph.index_loop({
+			subject : define.part,
+			into    : {},
+			else_do : function ( loop ) {
+				
+				var package_name, package_object
+				
+				package_name   = define.part_name_to_package_name[loop.indexed.type]
+				package_object = self.library[package_name]
+
+				if ( package_object.hasOwnProperty("define_event") ) {
+					var option_name = self.convert_text_to_option_name( loop.indexed.name )
+					loop.into[option_name] = package_object.define_state({
+						for  : loop.indexed.name,
+						with : loop.indexed.with 
+					})
+				}
+				return loop.into
+			}
+		})
+	},
+
+	define_listener : function ( define ) {
+		var self = this
+		var ss = this.library.morph.homomorph({
+			object : define.part_name_to_package_name,
+			set    : "array",
+			with   : function ( member ) {
+				// if ( self.library[member.value].hasOwnProperty("define_listener") ) { 
+				// 	return self.library[member.value].define_listener({
+				// 		class_name : define.class_name[member.property_name],
+				// 		with       : define.with
+				// 	})
+				// } else { 
+					return []
+				// }
+			}
+		})
+		console.log( ss )
+		return ss
+	},
+
+	define_event : function ( define ) {
+
+		var self = this
+		return this.library.morph.index_loop({
+			subject : define.used_package,
+			else_do : function ( loop ) {
+				if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
+					return loop.into.concat( self.library[loop.indexed].define_event({
+						with : define.with,
+					}))
+				} else { 
+					return loop.into
+				}
+			}
+		})
+	},
+
+	define_body : function ( define ) {
+		var self = this
+		return {
+			"class" : define.class_name.wrap,
+			"child" : this.loop_through_parts_and_perform_action({
+				define : define,
+				action : function ( loop ) { 
+					return loop.package_object.define_body({
+						name       : self.convert_text_to_option_name( loop.definition.name || "" ),
+						with       : loop.definition.with,
+						class_name : define.class_name[loop.definition.type]
+					})
+				}
+			})
+		}
+	},
+
+	loop_through_parts_and_perform_action : function ( through ) { 
+		var self = this
+		return this.library.morph.index_loop({
+			subject : through.define.part,
+			else_do : function ( loop ) {
+
+				if ( through.define.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
+					var package_name
+					package_name = through.define.part_name_to_package_name[loop.indexed.type]
+					return loop.into.concat( through.action.call({}, {
+						package_name   : package_name,
+						package_object : self.library[package_name],
+						class_name     : through.define.class_name,
+						definition     : loop.indexed,
+					}) )
+
+				} else { 
+					console.warn("Part type : "+ loop.indexed.type +" doth not exist")
+					return loop.into
+				}
+			}
+		})
+	},
+
+	convert_text_to_option_name : function ( text ) { 
+		return text.replace(/\s/g, "_").toLowerCase()
+	},
 })
