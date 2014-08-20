@@ -35,16 +35,17 @@ define({
 			events : this.define_event({
 				part_name_to_package_name : part_name_to_package_name,
 				class_name                : define.class_name,
-				used_package              : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
+				package_name              : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
 				with                      : { 
 					body : body.body
 				}
 			})
 		})
 		event_circle.add_listener( this.define_listener({
-			class_name                : define.class_name,
-			part_name_to_package_name : part_name_to_package_name,
-			with                      : {}
+			class_name   : define.class_name,
+			part_name    : this.library.morph.get_the_keys_of_an_object( part_name_to_package_name ),
+			package_name : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
+			with         : {}
 		}))
 
 		body.append(
@@ -78,29 +79,26 @@ define({
 
 	define_listener : function ( define ) {
 		var self = this
-		var ss = this.library.morph.homomorph({
-			object : define.part_name_to_package_name,
-			set    : "array",
-			with   : function ( member ) {
-				// if ( self.library[member.value].hasOwnProperty("define_listener") ) { 
-				// 	return self.library[member.value].define_listener({
-				// 		class_name : define.class_name[member.property_name],
-				// 		with       : define.with
-				// 	})
-				// } else { 
-					return []
-				// }
+		return this.library.morph.index_loop({
+			subject : define.package_name,
+			else_do : function ( loop ) {
+				if ( self.library[loop.indexed].hasOwnProperty("define_listener") ) {
+					return loop.into.concat( self.library[loop.indexed].define_listener({
+						class_name : define.class_name[define.part_name[loop.index]],
+						with       : define.with
+					}) )
+				} else {
+					return loop.into
+				}
+
 			}
 		})
-		console.log( ss )
-		return ss
 	},
 
 	define_event : function ( define ) {
-
 		var self = this
 		return this.library.morph.index_loop({
-			subject : define.used_package,
+			subject : define.package_name,
 			else_do : function ( loop ) {
 				if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
 					return loop.into.concat( self.library[loop.indexed].define_event({

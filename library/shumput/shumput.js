@@ -39,17 +39,14 @@ define({
 	},
 
 	define_listener : function ( define ) {
-		console.log( define )
 		return [ 
 			{
 				for       : "shumput input type",
 				that_does : function ( heard ) {
-					console.log( heard.event.target.value )
-					// if ( document.activeElement === heard.event.target ) { 
-					// 	var option_state
-					// 	option_state = heard.state.option[heard.event.target.getAttribute("data-shumput")]
-					// 	console.log( option_state )
-					// }
+					var value, option_state
+					option_state       = heard.state.option[heard.event.target.getAttribute("data-shumput")]
+					value              = heard.event.target.value
+					option_state.value = value
 					return heard
 				}
 			}
