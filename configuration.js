@@ -4,6 +4,8 @@ define({
 	main    : "eloquent",
 	module  : [],
 	package : [
-		"library/text"
+		"library/text",
+		"library/dropdown",
+		"librayr/keyswitch"
 	]
 })

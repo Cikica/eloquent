@@ -2,7 +2,7 @@ define({
 
 	define : {
 		require : [
-			
+			"text",
 		]
 	},
 
