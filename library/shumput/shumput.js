@@ -14,10 +14,8 @@ define({
 	define_state : function ( define ) {
 		return { 
 			value  : "",
-			verify : { 
-				ready : false,
-				text  : ""
-			}
+			valid  : ( define.with.verify ? false : true ),
+			verify : define.with.verify || {}
 		}
 	},
 
@@ -47,6 +45,18 @@ define({
 					option_state       = heard.state.option[heard.event.target.getAttribute("data-shumput")]
 					value              = heard.event.target.value
 					option_state.value = value
+					if ( option_state.verify.when ) {
+						var verification, text_body
+						text_body = heard.event.target.nextSibling
+						if ( option_state.verify.when( value ) ) {
+							verification            = option_state.verify.with( value )
+							option_state.valid      = verification.is_valid
+							text_body.textContent   = verification.text
+							text_body.style.display = "block"
+						} else { 
+							text_body.style.display = "none"
+						}
+					}
 					return heard
 				}
 			}
@@ -67,7 +77,7 @@ define({
 	define_text : function ( define ) { 
 		return {
 			"class"   : define.class_name.text,
-			"display" : "block",
+			"display" : "none",
 			"text"    : "Some Text"
 		}
 	},

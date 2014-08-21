@@ -8,6 +8,19 @@ define({
 				append_to  : document.body,
 				class_name : {
 					wrap : "wrap_main",
+					radio : {
+						"wrap"          : "radio_wrap",
+						"item"          : "radio_item",
+						"item_selected" : "radio_item_selected"
+					},
+					select : { 
+						"main"                 : "dropdown_main",
+						"option_selected_wrap" : "option_selected_wrap",
+						"option_selected"      : "option_selected",
+						"option_selector"      : "option_selector",
+						"option_wrap"          : "option_wrap",
+						"option"               : "option",
+					},
 					text : {
 						"wrap"      : "wrap_text",
 						"regular"   : "regular_text",
@@ -32,14 +45,50 @@ define({
 				},
 				part : [
 					{
+						type : "radio",
+						name : "Radio First",
+						with : {
+							option : {
+								choice : [
+									"Yes",
+									"No",
+									"Some"
+								]
+							}
+						}
+					},
+					{ 
+						type : "select",
+						name : "First drop",
+						with : {
+							option : {
+								choice : [
+									"somesome",
+									"Some",
+									"some some",
+								],
+								default_value : "Some",
+								mark          : { 
+									open   : "+",
+									closed : "-"
+								}
+							}
+						}
+					},
+					{
 						type : "input",
 						name : "First input",
 						with : { 
 							verify      : {
-								when : function () {
-									return 1
+								when : function ( value ) {
+									return ( value.length > 5 )
 								},
-								with : function () {},
+								with : function ( value ) {
+									return { 
+										is_valid : true,
+										text     : "sall good"
+									}
+								},
 							},
 							size        : "large",
 							value       : "some",
@@ -51,10 +100,15 @@ define({
 						name : "second input",
 						with : { 
 							verify      : {
-								when : function () {
-									return 2
+								when : function ( value ) {
+									return ( value.length > 5 )
 								},
-								with : function () {},
+								with : function ( value ) {
+									return { 
+										is_valid : true,
+										text     : "sall good"
+									}
+								},
 							},
 						},
 					},

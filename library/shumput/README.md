@@ -1,11 +1,4 @@
-nebula
-======
+Shumput
+=======
 
-Javascript module framework
-
-**Formula :**
-
-module main : [ 
-	module tool objects
-	initial configuration
-]
+Ui component for inputs, with filtering and checking and event binding and so forth.

@@ -77,3 +77,61 @@ body {
 .input_text {
 	text-transform: uppercase;
 }
+
+.dropdown_main {
+	width   : 100px;
+	float   : left;
+	margin  : 10px 0;
+	clear   : both;
+}
+
+.option_selected_wrap {
+	width            : 100%;
+	float            : left;
+	background-color : #555;
+	color            : #fff;
+	padding          : 10px;
+}
+
+.option_selected {
+	display : inline-block;
+	float   : left;
+	width   : 90%;
+}
+
+.option_selector {
+	display : inline-block;
+	float   : left;
+	width   : 10%;	
+}
+
+.option_wrap {
+
+}
+
+.option {
+
+}
+
+.radio_wrap { 
+	width            : 300px;
+	float            : left;
+	padding          : 10px;
+	background-color : #555;
+	clear            : both;
+	color            : #fff;
+}
+
+.radio_item { 
+	width   : 100px;
+	float   : left;
+	display : inline-block;
+}
+
+.radio_item_selected {
+	width            : 100px;
+	float            : left;
+	display          : inline-block;
+	color            : #555;
+	background-color : #fff;
+}

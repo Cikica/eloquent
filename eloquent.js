@@ -5,8 +5,10 @@ define({
 			"morph",
 			"event_master",
 			"transistor",
+			"keyswitch",
 			"text",
 			"shumput",
+			"dropdown",
 			"list",
 		]
 	},
@@ -16,9 +18,11 @@ define({
 
 		self                      = this
 		part_name_to_package_name = {
+			"radio"     : "keyswitch",
 			"text"      : "text",
 			"input"     : "shumput",
 			"list"      : "list",
+			"select"    : "dropdown",
 		}
 		body                 = this.library.transistor.make( this.define_body({
 			part_name_to_package_name : part_name_to_package_name,
@@ -102,7 +106,7 @@ define({
 			else_do : function ( loop ) {
 				if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
 					return loop.into.concat( self.library[loop.indexed].define_event({
-						with : define.with,
+						with       : define.with
 					}))
 				} else { 
 					return loop.into
@@ -117,7 +121,7 @@ define({
 			"class" : define.class_name.wrap,
 			"child" : this.loop_through_parts_and_perform_action({
 				define : define,
-				action : function ( loop ) { 
+				action : function ( loop ) {
 					return loop.package_object.define_body({
 						name       : self.convert_text_to_option_name( loop.definition.name || "" ),
 						with       : loop.definition.with,
