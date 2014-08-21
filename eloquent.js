@@ -1,6 +1,7 @@
 define({
 
 	define : {
+		allow   : "*",
 		require : [
 			"morph",
 			"event_master",
@@ -116,7 +117,8 @@ define({
 	},
 
 	define_body : function ( define ) {
-		var self = this
+		var default_value, self
+		self          = this
 		return {
 			"class" : define.class_name.wrap,
 			"child" : this.loop_through_parts_and_perform_action({
