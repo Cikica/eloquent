@@ -157,6 +157,7 @@ define({
 		"library/morphism",
 	],
 	package : [
+		"library/tree_option",
 		"library/morph",
 		"library/transistor",
 		"library/text",

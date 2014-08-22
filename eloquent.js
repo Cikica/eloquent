@@ -11,6 +11,7 @@ define({
 			"shumput",
 			"dropdown",
 			"list",
+			"tree_option"
 		]
 	},
 
@@ -24,6 +25,7 @@ define({
 			"input"     : "shumput",
 			"list"      : "list",
 			"select"    : "dropdown",
+			"tree"      : "tree_option",
 		}
 		body                 = this.library.transistor.make( this.define_body({
 			part_name_to_package_name : part_name_to_package_name,
@@ -35,6 +37,7 @@ define({
 				option : this.define_state_option({
 					part_name_to_package_name : part_name_to_package_name,
 					part                      : define.part,
+					body                      : body
 				}),
 			},
 			events : this.define_event({
@@ -74,7 +77,8 @@ define({
 					var option_name = self.convert_text_to_option_name( loop.indexed.name )
 					loop.into[option_name] = package_object.define_state({
 						for  : loop.indexed.name,
-						with : loop.indexed.with 
+						with : loop.indexed.with,
+						body : define.body
 					})
 				}
 				return loop.into
