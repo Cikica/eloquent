@@ -143,7 +143,7 @@ define({
 							option_state.chosen.node.getAttribute("data-option-path") :
 							""
 					)
-					option_state.body.result.get("result name").body.textContent = option_state.chosen.value
+					option_state.body.result.get("result name").body.textContent = option_state.chosen.value || "Nothing"
 					option_state.body.result.get("result path").body.textContent = option_path
 					option_state.chosen.path                                     = option_path.split(" -> ").concat(option_state.chosen.value).join(":")
 					return heard
