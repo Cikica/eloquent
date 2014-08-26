@@ -11,7 +11,8 @@ define({
 			"shumput",
 			"dropdown",
 			"list",
-			"tree_option"
+			"tree_option",
+			"button"
 		]
 	},
 
@@ -26,6 +27,7 @@ define({
 			"list"      : "list",
 			"select"    : "dropdown",
 			"tree"      : "tree_option",
+			"button"    : "button"
 		}
 		body                 = this.library.transistor.make( this.define_body({
 			part_name_to_package_name : part_name_to_package_name,
@@ -56,9 +58,13 @@ define({
 			with         : {}
 		}))
 
-		body.append(
-			define.append_to
-		)
+		if ( define.append_to ) { 
+			body.append(
+				define.append_to
+			)
+		} else { 
+			return body
+		}
 	},
 
 	define_state_option : function ( define ) { 
