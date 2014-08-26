@@ -133,8 +133,8 @@ define({
 		self          = this
 		default_value = define.with.option.value || define.with.option.choice[0]
 		return {
-			"class" : define.class_name.wrap,
-			"child" : [
+			"class"            : define.class_name.wrap,
+			"child"            : [
 				{
 					"class" : define.class_name.item_wrap,
 					"child" : this.library.morphism.index_loop({

@@ -55,7 +55,7 @@ define({
 			package_name : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
 			with         : {}
 		}))
-
+		
 		body.append(
 			define.append_to
 		)
