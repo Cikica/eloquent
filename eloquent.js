@@ -12,7 +12,8 @@ define({
 			"dropdown",
 			"list",
 			"tree_option",
-			"gregor"
+			"gregor",
+			"button"
 		]
 	},
 
@@ -27,7 +28,8 @@ define({
 			"list"      : "list",
 			"select"    : "dropdown",
 			"tree"      : "tree_option",
-			"date"      : "gregor"
+			"date"      : "gregor",
+			"button"    : "button"
 		}
 		body                 = this.library.transistor.make( this.define_body({
 			part_name_to_package_name : part_name_to_package_name,
@@ -57,10 +59,19 @@ define({
 			package_name : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
 			with         : {}
 		}))
-		
-		body.append(
-			define.append_to
-		)
+
+		if ( define.append_to ) { 
+			body.append(
+				define.append_to
+			)
+		} else { 
+			return {
+				transistor : body,
+				get_state  : function () { 
+					return event_circle.get_state()
+				}
+			}
+		}
 	},
 
 	define_state_option : function ( define ) { 
