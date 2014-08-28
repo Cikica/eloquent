@@ -8,15 +8,15 @@ define({
 	},
 
 	make : function () {
-		console.log( this.get_current_month_map() )
+		console.log( this.get_day().next_day().date )
 		console.log("entrude young messenger")
 	},
 
 	define_state : function ( define ) {
 		return {
-			body : define.body.get("gregor "+ define.for ),
-			map  : {},
-			date : this.get_current_day_map()
+			body  : define.body.get("gregor "+ define.for ),
+			map   : {},
+			value : this.get_current_day_map()
 		}
 	},
 	
@@ -69,19 +69,22 @@ define({
 			{
 				for       : "gregor chose date",
 				that_does : function ( heard ){
-					var date, name, option_state, text_body
-					name         = heard.event.target.getAttribute("data-gregor-name")
-					option_state = heard.state.option[name]
-					text_body    = option_state.body.get("gregor text "+ name).body
-					date         = {
+					var date, name, option_state, text_body, previous_date_body
+					name               = heard.event.target.getAttribute("data-gregor-name")
+					option_state       = heard.state.option[name]
+					text_body          = option_state.body.get("gregor text "+ name).body
+					previous_date_body = ( option_state.selected ?
+						option_state.selected : 
+						option_state.body.get("gregor current date "+ name ).body
+					)
+					date               = {
 						day   : heard.event.target.getAttribute("data-gregor-date"),
 						month : heard.event.target.getAttribute("data-gregor-month"),
 						year  : heard.event.target.getAttribute("data-gregor-year"),
 					}
-					if ( option_state.selected ) { 
-						option_state.selected.setAttribute("class", "package_main_calendar_day_number")
-					}
+					previous_date_body.setAttribute("class", "package_main_calendar_day_number")
 					option_state.selected = heard.event.target
+					option_state.value    = date
 					text_body.textContent = date.day +" "+ date.month +" "+ date.year
 					heard.event.target.setAttribute("class", "package_main_calendar_day_number_selected")
 					return heard
@@ -121,7 +124,9 @@ define({
 	},
 
 	define_calendar : function ( define ) {
-		var self = this
+		var self, date
+		self = this
+		current = this.get_day()
 		return {
 			"class"   : "package_main_calendar_wrap",
 			"display" : "block",
@@ -131,22 +136,31 @@ define({
 					"class" : "package_main_regular_wrap",
 					"child" : [
 						{
-							"class" : "package_main_quarter_wrap",
-							"text"  : "2014"
-						},
-						{
-							"class" : "package_main_three_quarter_wrap",
+							"class" : "package_main_date_month_wrap",
 							"child" : [
 								{ 
-									"class" : "package_main_quarter_wrap",
-									"text"  : "July"
+									"class" : "package_main_date_month_text",
+									"text"  : "2014"
 								},
-								{
-									"class" : "package_main_quarter_wrap",
-									"text"  : "September"
-								}
 							]
 						},
+						{
+							"class" : "package_main_date_month_wrap",
+							"child" : [
+								{ 
+									"class" : "package_main_date_month_text",
+									"text"  : current.previous_month().date.month.name
+								},
+								{
+									"class" : "package_main_date_month_text_current",
+									"text"  : current.date.month.name
+								},
+								{
+									"class" : "package_main_date_month_text",
+									"text"  : current.next_month().date.month.name
+								}
+							]
+						}
 					]
 				},
 				{ 
@@ -166,6 +180,24 @@ define({
 					"child" : this.library.morph.index_loop({
 						subject : define.month,
 						else_do : function ( loop ) {
+							var definition
+							definition = {
+								"class"             : ( 
+									current.date.day.number === loop.indexed.day.number ? 
+										"package_main_calendar_day_number_selected" : 
+										"package_main_calendar_day_number" 
+								),
+								"text"              : loop.indexed.day.number,
+								"data-gregor-name"  : define.name,
+								"data-gregor-date"  : loop.indexed.day.number,
+								"data-gregor-month" : loop.indexed.month.name,
+								"data-gregor-year"  : loop.indexed.year
+							}
+
+							if ( current.date.day.number === loop.indexed.day.number ) { 
+								definition["mark_as"] = "gregor current date "+ define.name
+							}
+
 							if ( loop.index === 0 ) { 
 								loop.into = loop.into.concat( self.library.morph.while_greater_than_zero({
 									count   : ( 7 - ( 7 - loop.indexed.day.week_day_number ) - 1 ),
@@ -186,14 +218,7 @@ define({
 								})
 							}
 
-							return loop.into.concat({
-								"class"             : "package_main_calendar_day_number",
-								"text"              : loop.indexed.day.number,
-								"data-gregor-name"  : define.name,
-								"data-gregor-date"  : loop.indexed.day.number,
-								"data-gregor-month" : loop.indexed.month.name,
-								"data-gregor-year"  : loop.indexed.year
-							})
+							return loop.into.concat( definition )
 						}
 					})
 				}
@@ -203,6 +228,43 @@ define({
 
 	define_date_format : function ( date ) {
 		return date.month.number +" "+ date.month.name +" "+ date.year
+	},
+
+	get_day : function ( day ) {
+		var date, self
+		self = this
+		date = ( day ? this.get_day_map_for( day ) : this.get_day_map_for( new Date() ) )
+		return {
+			date : date,
+			previous_month : function () {
+				return self.get_day({
+					year  : this.date.year,
+					month : this.date.month.number - 2,
+					day   : this.date.day.number
+				})
+			},
+			next_month : function () { 
+				return self.get_day({
+					year  : this.date.year,
+					month : this.date.month.number,
+					day   : this.date.day.number
+				})
+			},
+			previous_day : function () { 
+				return self.get_day({
+					year  : this.date.year,
+					month : this.date.month.number - 1,
+					day   : this.date.day.number - 1
+				})
+			},
+			next_day : function () {
+				return self.get_day({
+					year  : this.date.year,
+					month : this.date.month.number - 1,
+					day   : this.date.day.number + 1
+				})
+			}
+		}
 	},
 
 	get_current_day_map : function () {
