@@ -68,7 +68,7 @@ define({
 
 					name               = heard.event.target.getAttribute("data-gregor-name")
 					option_state       = heard.state.option[name]
-					calendar_body      = option_state.calendar || option_state.body
+					calendar_body      = option_state.calendar || option_state.body.get("gregor calendar "+ name)
 					text_body          = option_state.body.get("gregor text "+ name).body
 					previous_date_body = ( option_state.selected ?
 						option_state.selected : 
@@ -80,9 +80,10 @@ define({
 						day   : heard.event.target.getAttribute("data-gregor-day-number"),
 					})
 					previous_date_body.setAttribute("class", "package_main_calendar_day_number")
-					option_state.selected = heard.event.target
-					option_state.value    = date
-					text_body.textContent = date.date.day.number +" "+ date.date.month.name +" "+ date.date.year
+					option_state.selected            = heard.event.target
+					option_state.value               = date
+					text_body.textContent            = date.date.day.number +" "+ date.date.month.name +" "+ date.date.year
+					calendar_body.body.style.display = "none"
 					heard.event.target.setAttribute("class", "package_main_calendar_day_number_selected")
 					return heard
 				}
