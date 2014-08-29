@@ -5,7 +5,7 @@ define({
 	},
 
 	define_date_format : function ( date ) {
-		return date.month.number +" "+ date.month.name +" "+ date.year
+		return date.day.number +" "+ date.month.name +" "+ date.year
 	},
 
 	get_day : function ( day ) {

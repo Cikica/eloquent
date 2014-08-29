@@ -40,7 +40,7 @@ define({
 	define_calendar : function ( define ) {
 		return {
 			"class"   : "package_main_calendar_wrap",
-			"display" : "block",
+			"display" : "none",
 			"mark_as" : "gregor calendar "+ define.name,
 			"child"   : this.define_calendar_body( define )
 		}
