@@ -38,6 +38,7 @@ define({
 						month      : new_month.get_month_map(),
 						day        : new_month
 					}))
+					option_state.calendar.body.style.display = "block"
 					option_state.value    = new_month
 					option_state.selected = false
 					calendar_body_parent.removeChild( calendar_body.body )
