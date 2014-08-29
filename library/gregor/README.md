@@ -1,11 +1,4 @@
-nebula
+Gregor
 ======
 
-Javascript module framework
-
-**Formula :**
-
-module main : [ 
-	module tool objects
-	initial configuration
-]
+A calendar ui component, based on the gregorian calendar, and aptly named as such.

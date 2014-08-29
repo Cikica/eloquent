@@ -6,8 +6,14 @@ define({
 			with : {}
 		}
 	},
-	module  : [],
+	module  : [
+		"library/calendar_logic",
+		"library/body",
+		"library/event",
+		"library/listener",
+	],
 	package : [
-		"library/morph"
+		"library/morph",
+		"library/transistor",
 	]
 })
