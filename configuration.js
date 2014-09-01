@@ -166,6 +166,7 @@ define({
 		"library/dropdown",
 		"library/keyswitch",
 		"library/button",
-		"library/gregor"
+		"library/gregor",
+		"library/tabular",
 	]
 })

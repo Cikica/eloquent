@@ -13,7 +13,8 @@ define({
 			"list",
 			"tree_option",
 			"gregor",
-			"button"
+			"button",
+			"tabular"
 		]
 	},
 
@@ -22,14 +23,15 @@ define({
 
 		self                      = this
 		part_name_to_package_name = {
-			"radio"     : "keyswitch",
-			"text"      : "text",
-			"input"     : "shumput",
-			"list"      : "list",
-			"select"    : "dropdown",
-			"tree"      : "tree_option",
-			"date"      : "gregor",
-			"button"    : "button"
+			"radio"  : "keyswitch",
+			"text"   : "text",
+			"input"  : "shumput",
+			"list"   : "list",
+			"select" : "dropdown",
+			"tree"   : "tree_option",
+			"date"   : "gregor",
+			"button" : "button",
+			"table"  : "tabular"
 		}
 		body                 = this.library.transistor.make( this.define_body({
 			part_name_to_package_name : part_name_to_package_name,
