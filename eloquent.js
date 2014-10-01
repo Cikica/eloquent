@@ -19,6 +19,7 @@ define({
 	},
 
 	make : function ( define ) {
+		
 		var self, body, event_circle, part_name_to_package_name
 
 		self                      = this

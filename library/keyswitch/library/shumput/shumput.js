@@ -12,6 +12,7 @@ define({
 	},
 
 	define_state : function ( define ) {
+
 		return { 
 			value  : "",
 			valid  : ( define.with.verify ? false : true ),
@@ -54,14 +55,20 @@ define({
 	},
 
 	input_type_listener : function ( input ) {
+
 		var value, option_state
+		
 		option_state       = input.state.option[input.event.target.getAttribute( input.data_name )]
 		value              = input.event.target.value
 		option_state.value = value
+
 		if ( option_state.verify && option_state.verify.when ) {
+
 			var verification, text_body
 			text_body = input.event.target.nextSibling
+
 			if ( option_state.verify.when( value ) ) {
+
 				verification            = option_state.verify.with( value )
 				option_state.valid      = verification.is_valid
 				text_body.textContent   = verification.text
@@ -75,6 +82,7 @@ define({
 				text_body.style.display = "none"
 			}
 		}
+
 		return { 
 			state : input.state,
 			event : input.event

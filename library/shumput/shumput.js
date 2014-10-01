@@ -12,6 +12,7 @@ define({
 	},
 
 	define_state : function ( define ) {
+		
 		return { 
 			value  : "",
 			valid  : ( define.with.verify ? false : true ),
