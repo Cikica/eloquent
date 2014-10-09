@@ -102,6 +102,23 @@ define({
 		})
 	},
 
+	define_event : function ( define ) {
+		var self = this
+		return this.library.morph.index_loop({
+			subject : define.package_name,
+			else_do : function ( loop ) {
+
+				if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
+					return loop.into.concat( self.library[loop.indexed].define_event({
+						with : define.with
+					}))
+				} else { 
+					return loop.into
+				}
+			}
+		})
+	},
+
 	define_listener : function ( define ) {
 		var self = this
 		return this.library.morph.index_loop({
@@ -111,24 +128,8 @@ define({
 					return loop.into.concat( self.library[loop.indexed].define_listener({
 						class_name : define.class_name[define.part_name[loop.index]],
 						with       : define.with
-					}) )
-				} else {
-					return loop.into
-				}
-			}
-		})
-	},
-
-	define_event : function ( define ) {
-		var self = this
-		return this.library.morph.index_loop({
-			subject : define.package_name,
-			else_do : function ( loop ) {
-				if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
-					return loop.into.concat( self.library[loop.indexed].define_event({
-						with       : define.with
 					}))
-				} else { 
+				} else {
 					return loop.into
 				}
 			}
