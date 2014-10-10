@@ -16,7 +16,6 @@
 	{ 
 		make : function ( module ) {
 			var sorter
-
 			sorter = module.nebula.nebula.make()
 			sorter.call_this_method_on_load_completion( function ( load_map ) {
 				module.nebula.get.require_package_modules({

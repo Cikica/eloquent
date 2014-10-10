@@ -18,48 +18,49 @@ define({
 		]
 	},
 
+	part_name_to_package_name : { 
+		"radio"  : "keyswitch",
+		"text"   : "text",
+		"input"  : "shumput",
+		"list"   : "list",
+		"select" : "dropdown",
+		"tree"   : "tree_option",
+		"date"   : "gregor",
+		"button" : "button",
+		"table"  : "tabular"
+	},
+
 	make : function ( define ) {
 		
-		var self, body, event_circle, part_name_to_package_name
+		console.log( define )
+		var self, body, event_circle
 
-		self                      = this
-		part_name_to_package_name = {
-			"radio"  : "keyswitch",
-			"text"   : "text",
-			"input"  : "shumput",
-			"list"   : "list",
-			"select" : "dropdown",
-			"tree"   : "tree_option",
-			"date"   : "gregor",
-			"button" : "button",
-			"table"  : "tabular"
-		}
-		body                 = this.library.transistor.make( this.define_body({
-			part_name_to_package_name : part_name_to_package_name,
-			class_name                : define.class_name,
-			part                      : define.part,
+		self = this
+		body = this.library.transistor.make( this.define_body({
+			class_name : define.class_name,
+			part       : define.part,
 		}))
-		event_circle         = Object.create( this.library.event_master ).make({
+		event_circle = Object.create( this.library.event_master ).make({
 			state  : {
 				option : this.define_state_option({
-					part_name_to_package_name : part_name_to_package_name,
-					part                      : define.part,
-					body                      : body
+					part : define.part,
+					body : body
 				}),
 			},
 			events : this.define_event({
-				part_name_to_package_name : part_name_to_package_name,
-				class_name                : define.class_name,
-				package_name              : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
-				with                      : { 
+				class_name   : define.class_name,
+				package_name : this.library.morph.get_the_values_of_an_object( 
+					this.part_name_to_package_name 
+				),
+				with         : { 
 					body : body.body
 				}
 			})
 		})
 		event_circle.add_listener( this.define_listener({
 			class_name   : define.class_name,
-			part_name    : this.library.morph.get_the_keys_of_an_object( part_name_to_package_name ),
-			package_name : this.library.morph.get_the_values_of_an_object( part_name_to_package_name ),
+			part_name    : this.library.morph.get_the_keys_of_an_object( this.part_name_to_package_name ),
+			package_name : this.library.morph.get_the_values_of_an_object( this.part_name_to_package_name ),
 			with         : {}
 		}))
 
@@ -77,8 +78,10 @@ define({
 		}
 	},
 
-	define_state_option : function ( define ) { 
+	define_state_option : function ( define ) {
+
 		var self = this
+
 		return this.library.morph.index_loop({
 			subject : define.part,
 			into    : {},
@@ -86,7 +89,7 @@ define({
 				
 				var package_name, package_object
 				
-				package_name   = define.part_name_to_package_name[loop.indexed.type]
+				package_name   = self.part_name_to_package_name[loop.indexed.type]
 				package_object = self.library[package_name]
 
 				if ( package_object.hasOwnProperty("define_event") ) {
@@ -120,7 +123,9 @@ define({
 	},
 
 	define_listener : function ( define ) {
+		
 		var self = this
+
 		return this.library.morph.index_loop({
 			subject : define.package_name,
 			else_do : function ( loop ) {
@@ -137,8 +142,9 @@ define({
 	},
 
 	define_body : function ( define ) {
-		var default_value, self
-		self          = this
+		
+		var self = this
+
 		return {
 			"class" : define.class_name.wrap,
 			"child" : this.loop_through_parts_and_perform_action({
@@ -155,14 +161,16 @@ define({
 	},
 
 	loop_through_parts_and_perform_action : function ( through ) { 
+		
 		var self = this
+
 		return this.library.morph.index_loop({
 			subject : through.define.part,
 			else_do : function ( loop ) {
 
-				if ( through.define.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
+				if ( self.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
 					var package_name
-					package_name = through.define.part_name_to_package_name[loop.indexed.type]
+					package_name = self.part_name_to_package_name[loop.indexed.type]
 					return loop.into.concat( through.action.call({}, {
 						package_name   : package_name,
 						package_object : self.library[package_name],
