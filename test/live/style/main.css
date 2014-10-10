@@ -1,0 +1,139 @@
+*, :before, :after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+body {
+  width: 100%;
+  float: left;
+  margin: 0;
+  padding: 20px;
+  font-family: Arial;
+  font-size: 14px;
+  line-height: 18px;
+  color: #333333; }
+
+.wrap_list {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px; }
+
+.wrap_list_item {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px; }
+
+.list_item_text_wrap {
+  float: left;
+  display: inline-block; }
+
+.list_item_notation {
+  float: left;
+  display: inline-block; }
+
+.list_item_text {
+  float: left;
+  display: inline-block; }
+
+.list_item_list {
+  margin-left: 10px;
+  float: left;
+  width: 100%; }
+
+.wrap_text {
+  width: 100%;
+  float: left;
+  margin-bottom: 20px; }
+
+.regular_text {
+  text-transform: uppercase; }
+
+.imporant_text {
+  color: #23ff44; }
+
+.italic_text {
+  font-style: italic; }
+
+.wrap_input {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px; }
+
+.input_base, .input_small, .input_large {
+  font-family: Arial;
+  line-height: 18px;
+  font-size: 16px;
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #333333;
+  float: left; }
+
+.input_text_base, .input_text_valid, .input_text_invalid {
+  width: 300px;
+  float: left;
+  margin-top: 10px;
+  clear: both;
+  text-transform: uppercase;
+  font-weight: bold; }
+
+.input_text_invalid {
+  font-style: italic; }
+
+.dropdown_main {
+  width: 300px;
+  float: left;
+  margin: 10px 0;
+  clear: both; }
+
+.option_selected_wrap {
+  width: 100%;
+  float: left;
+  background-color: #333333;
+  color: white; }
+
+.option_selected {
+  display: inline-block;
+  float: left;
+  width: 80%;
+  padding: 10px; }
+
+.option_base, .option_selector, .option {
+  float: left;
+  padding: 10px;
+  color: white;
+  background-color: #555555; }
+  .option_base:hover, .option_selector:hover, .option:hover {
+    background-color: #444444; }
+
+.option_selector {
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+  font-weight: bold; }
+
+.option_wrap {
+  float: left;
+  width: 100%; }
+
+.option {
+  width: 100%; }
+
+.radio_wrap {
+  width: 300px;
+  float: left;
+  background-color: #333333;
+  clear: both;
+  color: white; }
+
+.radio_base, .radio_item, .radio_item_selected {
+  width: 100px;
+  padding: 20px;
+  float: left;
+  display: inline-block;
+  color: white; }
+
+.radio_item {
+  background-color: #333333; }
+
+.radio_item_selected {
+  background-color: #555555; }

@@ -37,10 +37,11 @@ define({
 						"item_list"      : "list_item_list",
 					},
 					input : {
-						"wrap"  : "wrap_input",
-						"text"  : "input_text",
-						"small" : "input_small",
-						"large" : "input_large"
+						"wrap"         : "wrap_input",
+						"text_valid"   : "input_text_valid",
+						"text_invalid" : "input_text_invalid",
+						"small"        : "input_small",
+						"large"        : "input_large"
 					}
 				},
 				part : [

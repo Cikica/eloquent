@@ -1,0 +1,17 @@
+.wrap_text {
+	width         : 100%;
+	float         : left;
+	margin-bottom : $unit*2;
+}
+
+.regular_text {
+	text-transform: uppercase;
+}
+
+.imporant_text {
+	color : #23ff44;
+}
+
+.italic_text {
+	font-style: italic;
+}

@@ -1,0 +1,48 @@
+.dropdown_main {
+	width  : $unit*30;
+	float  : left;
+	margin : $unit 0;
+	clear  : both;
+}
+
+.option_selected_wrap {
+	width            : 100%;
+	float            : left;
+	background-color : $ink;
+	color            : $light;
+}
+
+.option_selected {
+	display : inline-block;
+	float   : left;
+	width   : 80%;
+	padding : 10px;
+}
+
+.option_base { 
+	float            : left;
+	padding          : $unit;
+	color            : $light;
+	background-color : $light_ink;
+	&:hover { 
+		background-color: $medium_ink;
+	}
+}
+
+.option_selector {
+	@extend .option_base;
+	display     : inline-block;
+	width       : 20%;
+	text-align  : center;
+	font-weight : bold;
+}
+
+.option_wrap {
+	float : left;
+	width : 100%;
+}
+
+.option {
+	@extend .option_base;
+	width : 100%;
+}
