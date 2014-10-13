@@ -1,36 +1,66 @@
 var eloquent
-eloquent = window.main
-// can make it so you set the class names ealry on 
-// then you just use a new make method to supply parts
-describe("Defines", function() {explo
-	eloquent.make({
-		class_name : { 
-			text : {
-				"wrap"     : "",
-				"regular"  : "",
-				"imporant" : "",
-			},
-		},
-		part : [
-			{
-				type : "text",
-				with : {
-					content : [
-						{ 
-							type : "bold",
-							text : "One",
-						},
-						{ 
-							type : "underline",
-							text : "Two",
-						},
-						{ 
-							type : "italic",
-							text : "Three",
-						}
-					]
+eloquent                           = window.main
+eloquent.library                   = {
+	"morph" : window.morph,
+	"one"   : {
+		define_event : function () { 
+			return [
+				{
+					called : "reset",
+					some   : "2"
 				},
-			}
-		]	
+				{
+					called : "touch",
+					some   : "3"
+				}
+			]
+		}
+	},
+	"two" : {
+		define_event : function () { 
+			return [
+				{
+					called : "reset",
+					some   : "4"
+				},
+				{
+					called : "ll",
+					some   : "5"
+				}
+			]
+		}
+	},
+}
+eloquent.part_name_to_package_name = { 
+	"first"  : "one",
+	"second" : "two"
+}
+
+describe("define event definition map", function() {
+	it("does just that", function() {
+		expect(eloquent.define_event_definition_map({
+			with : {}
+		})).toEqual({
+			one : { 
+				"reset" : {
+					called : "one reset",
+					some   : "2"
+				},
+				"touch" : {
+					called : "one touch",
+					some   : "3"
+				}
+			},
+			two : { 
+				"reset" : {
+					called : "two reset",
+					some   : "4"
+				},
+				"ll" : {
+					called : "two ll",
+					some   : "5"
+				}
+			},
+		})
 	})
 })

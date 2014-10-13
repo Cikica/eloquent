@@ -1,6 +1,34 @@
 
 	var module = window.morph
 
+	describe("get object from arrays", function ( ) {
+		it("merges", function() {
+			expect(
+				module.get_object_from_array({
+					key   : ["s", "d"],
+					value : [1,2]
+				})
+			).toEqual({
+				"s" : 1,
+				"d" : 2
+			})
+		})
+		it("mergers with a method", function() {
+			expect(
+				module.get_object_from_array({
+					key     : ["s", "d"],
+					value   : [1,2],
+					else_do : function ( loop ) {
+						return loop.value + "some"
+					}
+				})
+			).toEqual({
+				"s" : "1some",
+				"d" : "2some"
+			})
+		})
+	})
+
 	describe("homomorph", function () {
 		
 		var input, expected_array, maped_array
@@ -448,6 +476,173 @@
 		})
 	})
 
+	describe("surject object", function() {
+		it("removes a single key and value by key", function() {
+			var pass, result
+			pass = {
+				object : { "some" : "name", "another" : "value" },
+				with   : ["some"],
+				by     : "key"
+
+			}
+			result = module.surject_object(pass)
+			expect(result).toEqual({ "another" : "value" })
+		})
+
+		it("removes a several keys and values by key", function() {
+			var pass, result
+			pass = {
+				object : { 
+					"some"     : "name", 
+					"another"  : "value",
+					"another2" : "values",
+				},
+				with   : ["some", "another"],
+				by     : "key"
+
+			}
+			result = module.surject_object(pass)
+			expect(result).toEqual({ "another2" : "values" })
+		})
+	})
+
 	describe("biject ", function() {
 		
+	})
+
+	describe("get the values of an object", function() {
+		it("gets the values", function() {
+			expect(module.get_the_values_of_an_object({
+				s : 1,
+				d : 2
+			})).toEqual([1,2])
+		})
+		it("gets arrays rather than joining them into one", function() {
+			expect(module.get_the_values_of_an_object({
+				s : [1,2,3],
+				d : 2
+			})).toEqual([ [1,2,3], 2 ])
+		})
+	})
+
+	describe("get the keys of an object", function() {
+		it("gets the values", function() {
+			expect(module.get_the_keys_of_an_object({
+				s : 1,
+				d : 2
+			})).toEqual([ "s", "d" ])
+		})
+	})
+
+	describe("object loop", function() {
+		it("loops through an object with a simple else do", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4"
+					}
+				}
+			})).toEqual({
+				"02s" : "d04",
+				"12b" : "some14",
+			})
+		})
+
+		it("loops through an object with an if done", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				"if_done?" : function ( loop ) {
+					return [ loop.key[0], loop.value[0], loop.key[1], loop.value[1] ].join(":")
+				},
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4"
+					}
+				}
+			})).toEqual("02s:d04:12b:some14")
+		})
+
+		it("loops through an object with the into", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				"into?"    : "some",
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4",
+						into  : loop.into + "s"
+					}
+				}
+			})).toEqual("somess")
+		})
+	})
+
+
+	describe("flatten object", function() {
+		it("flattens nested objects", function() {
+			expect(module.flatten_object({ 
+				object : {
+					some : "here",
+					som  : {
+						level : "2"
+					},
+					somesome : { 
+						"level1" : {
+							"level2" : "3"
+						},
+						"levelsome" : {
+							"levelsomesome" : {
+								"level3" : "4"
+							}
+						}
+					}
+				}
+			})).toEqual({
+				"some"   : "here",
+				"level"  : "2",
+				"level2" : "3",
+				"level3" : "4"
+			})
+		})
+
+		it("flattens objects to a specified depth level", function() {
+			expect(module.flatten_object({
+				to_level : 1,
+				object   : {
+					"some" : { 
+						"level1" : 1
+					},
+					"somesome" : {
+						"level1.1" : 2,
+						"level2"   : {
+							"level2.2" : 3,
+							"moremore" : { 
+								"level.3.3" : 4
+							}
+						}
+					}
+				}
+			})).toEqual({
+				"level1"   : 1,
+				"level1.1" : 2,
+				"level2"   : {
+					"level2.2" : 3,
+					"moremore" : { 
+						"level.3.3" : 4
+					}
+				}
+			})	
+		})
 	})

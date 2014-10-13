@@ -13,8 +13,9 @@
 		// a structure perserving map
 		homomorph : function (what) {
 			
-			var set, with_function_for_nested_objects, with_function
+			var set, with_function_for_nested_objects, with_function, count
 
+			count                            = -1
 			set                              = ( what.set === "array" ? [] : {} )
 			with_function_for_nested_objects = function (member) {
 				return member.value
@@ -26,7 +27,9 @@
 
 				if ( what.object.hasOwnProperty(property) ) {
 
-					var new_value = what.object[property]
+					var new_value, count
+					count     = count + 1
+					new_value = what.object[property]
 
 					if ( what.object[property].constructor === Object )
 						new_value = this.homomorph({
@@ -42,6 +45,7 @@
 							value         : new_value,
 							property_name : property,
 							set           : set,
+							count         : count
 						})
 						set = set.concat(( 
 							return_value.constructor === Array ?
@@ -55,6 +59,7 @@
 							value         : new_value,
 							property_name : property,
 							set           : set,
+							count         : count
 						})
 				}
 			}
@@ -132,6 +137,38 @@
 					}
 				},
 			})
+		},
+
+		surject_object : function ( what ) { 
+			var key, value, what_to_remove
+			key   = this.get_the_keys_of_an_object( what.object )
+			value = this.get_the_values_of_an_object( what.object )
+
+			if ( what.by === "key" ) { 
+				var removed_key_index, new_key
+				removed_key_index = this.index_loop({
+					subject : key,
+					else_do : function ( loop ) { 
+						return ( what.with.indexOf( loop.indexed ) > -1 ?
+							loop.into.concat( loop.index ) : 
+							loop.into 
+						)
+					}
+				})
+				
+				return this.get_object_from_array({
+					key : this.surject_array({
+						array : key,
+						with  : removed_key_index,
+						by    : "index",
+					}),
+					value : this.surject_array({
+						array : value,
+						with  : removed_key_index,
+						by    : "index",
+					})
+				})
+			}
 		},
 
 		are_these_two_values_the_same : function( value ) {
@@ -302,18 +339,52 @@
   		},
 
   		get_the_values_of_an_object : function ( object ) { 
+  			
   			var keys
   			keys = []
   			for ( var property in object ) { 
-  				if ( object.hasOwnProperty( property ) ) { 
-  					keys = keys.concat( object[property] )
+  				if ( object.hasOwnProperty( property ) ) {
+  					var value
+  					value = object[property]
+  					if ( value.constructor === Array ) {
+  						keys = keys.concat([ value ])
+  					} else { 
+  						keys = keys.concat( value )
+  					}
   				}
   			}
+
   			return keys
   		},
 
 		biject : function () {
 
+		},
+
+		get_object_from_array : function ( array ) {
+			return this.index_loop({
+				subject : array.key,
+				into    : {},
+				if_done : function ( loop ) { 
+					return ( array.if_done ? array.if_done.call( {}, loop ) : loop.into )
+				},
+				else_do : function ( loop ) {
+					var value
+					if ( array.else_do ) { 
+						value = array.else_do.call( {}, {
+							index : loop.index,
+							key   : loop.indexed,
+							value : array.value[loop.index],
+							set   : loop.into
+						})
+					} else { 
+						value = array.value[loop.index]
+					}
+					loop.into[loop.indexed] = value
+
+					return loop.into
+				}
+			})
 		},
 
 		while_greater_than_zero : function ( loop ) { 
@@ -382,7 +453,7 @@
 		index_loop_base : function (loop) {
 			
 			if ( loop.subject === undefined ) {
-				throw new this.exceptions.definition("index_loop_base \"subject\" paramter has not been declared")
+				console.error("The loop \"subject\" has not been specified")
 			}
 
 			var length
@@ -405,6 +476,71 @@
 					else_do  : loop.else_do
 				}))
 			}
+		},
+
+		object_loop : function ( loop ) { 
+			
+			var key, value, self
+			self  = this
+			key   = this.get_the_keys_of_an_object( loop.subject )
+			value = this.get_the_values_of_an_object( loop.subject )
+			return this.base_loop({
+				length       : key.length,
+				index        : 0,
+				subject      : key.slice(0),
+				map          : {
+					"key"   : [],
+					"value" : [],
+					"into"  : loop["into?"] || ""
+				},
+				is_done_when : function ( base_loop ) {
+					return ( base_loop.index === key.length )
+				},
+				if_done     : function ( base_loop ) {
+					var result, object
+					object = self.get_object_from_array({
+						key   : base_loop.map.key,
+						value : base_loop.map.value
+					})
+
+					if ( loop["if_done?"] ) { 
+						result = loop["if_done?"].call({}, { 
+							key    : base_loop.map.key.slice(0),
+							value  : base_loop.map.value.slice(0),
+							into   : base_loop.map.into,
+							object : object
+						})
+					}
+					
+					if ( loop["into?"] !== undefined ) {
+						result = base_loop.map.into
+					}
+
+					return result || object
+				},
+				else_do      : function ( base_loop ) {
+					var given
+					given = loop.else_do.call({}, {
+						"key"   : key[base_loop.index],
+						"value" : value[base_loop.index],
+						"into"  : base_loop.map.into,
+						"index" : base_loop.index
+					})
+					return {
+						length       : base_loop.length,
+						map          : {
+							key   : base_loop.map.key.concat(   given.key   || base_loop.map.key ),
+							value : base_loop.map.value.concat( given.value || base_loop.map.value ),
+							into  : given.into || base_loop.map.into
+						},
+						index        : base_loop.index + 1,
+						is_done_when : base_loop.is_done_when,
+						if_done      : base_loop.if_done,
+						else_do      : base_loop.else_do,
+					}
+				}
+			})
+
 		},
 
 		copy : function (copy) {
@@ -439,6 +575,37 @@
 				return replace.default
 			else
 				return replace.what
+		},
+
+		flatten_object : function ( flatten ) {
+			
+			var self
+			
+			flatten.to_level = flatten.to_level || Infinity
+			flatten.on_level = flatten.on_level || 0
+			self             = this
+
+			return this.object_loop({
+				"subject" : flatten.object,
+				"into?"   : flatten.into || {},
+				"else_do" : function ( loop ) {
+
+					if ( loop.value.constructor === Object && flatten.on_level < flatten.to_level ) {
+						loop.into = self.flatten_object({
+							object   : loop.value,
+							into     : loop.into,
+							on_level : flatten.on_level + 1,
+							to_level : flatten.to_level 
+						})
+					} else { 
+						loop.into[loop.key] = loop.value
+					}
+
+					return {
+						into : loop.into
+					}
+				}
+			})
 		},
 
 		exceptions : { 

@@ -59,7 +59,7 @@ define({
 		var self = this
 		return [
 			{
-				for       : "keyswitch type",
+				for       : "type",
 				that_does : function ( heard ) {
 					return self.library.shumput.input_type_listener({
 						data_name  : "data-keyswitch-shumput",
@@ -70,7 +70,7 @@ define({
 				}
 			},
 			{
-				for       : "keyswitch select",
+				for       : "select",
 				that_does : function ( heard ) {
 					var option_state, value, button, wrap
 					button             = heard.event.target
@@ -100,7 +100,7 @@ define({
 	define_event : function ( define ) {
 		return [
 			{ 
-				called       : "keyswitch type",
+				called       : "type",
 				that_happens : [
 					{
 						on : define.with.body,
@@ -114,7 +114,7 @@ define({
 				}
 			},
 			{
-				called       : "keyswitch select",
+				called       : "select",
 				that_happens : [
 					{ 
 						on : define.with.body,

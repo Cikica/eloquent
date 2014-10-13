@@ -49,6 +49,9 @@ define({
 	define_event : function ( define ) {
 		return [
 			{
+				called       : "reset"
+			},
+			{
 				called       : "toggle dropdown",
 				that_happens : [
 					{
