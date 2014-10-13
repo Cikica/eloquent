@@ -4,7 +4,7 @@ define({
 	start   : {
 		test : [
 			"test/live/definition/class_name",
-			"test/live/definition/init"
+			"test/live/definition/part"
 		]
 	},
 	// start   : {

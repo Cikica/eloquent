@@ -32,14 +32,17 @@ define({
 
 	make : function ( define ) {
 		
-		console.log( define )
+
 		var self, body, event_circle
 
-		self = this
-		body = this.library.transistor.make( this.define_body({
+		self             = this
+		define.append_to = define.part.append_to
+		define.part      = ( define.part.part ? define.part.part : define.part )
+		body             = this.library.transistor.make( this.define_body({
 			class_name : define.class_name,
 			part       : define.part,
 		}))
+		console.log( define )
 		event_circle = Object.create( this.library.event_master ).make({
 			state  : {
 				option : this.define_state_option({

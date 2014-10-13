@@ -1,5 +1,6 @@
 define({
-	part : [
+	append_to : document.body,
+	part      : [
 		{
 			type : "radio",
 			name : "Radio First",
