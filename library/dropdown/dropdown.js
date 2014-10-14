@@ -83,6 +83,13 @@ define({
 
 	define_listener : function ( define ) {
 		return [
+			{ 
+				for       : "reset",
+				that_does : function ( heard ) {
+					console.log(" dropdown reset ")
+					return heard
+				}
+			},
 			{
 				for       : "toggle dropdown",
 				that_does : function ( heard ) {
@@ -192,6 +199,7 @@ define({
 	}
 	
 })
+
 // could create a context finder that is fed a definiton and then finds what he needs based upon it
 // accepts definition, 
 // node that is meant to represent it, 

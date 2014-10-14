@@ -14,6 +14,18 @@ define({
 				}
 			}
 		},
+		{
+			type : "radio",
+			name : "Radio First",
+			with : {
+				option : {
+					choice : [
+						"Somee",
+						"Some"
+					]
+				}
+			}
+		},
 		{ 
 			type : "select",
 			name : "First drop",
@@ -23,6 +35,24 @@ define({
 						"somesome",
 						"Some",
 						"some some",
+					],
+					default_value : "Some",
+					mark          : { 
+						open   : "+",
+						closed : "-"
+					}
+				}
+			}
+		},
+		{ 
+			type : "select",
+			name : "First drop",
+			with : {
+				option : {
+					choice : [
+						"Wonder Person",
+						"Some2",
+						"some some3",
 					],
 					default_value : "Some",
 					mark          : { 

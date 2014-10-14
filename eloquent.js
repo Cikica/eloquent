@@ -14,7 +14,6 @@
 })( 
 	window,
 	{
-
 		define : {
 			allow   : "*",
 			require : [
@@ -45,7 +44,7 @@
 			"table"  : "tabular"
 		},
 
-		shared_events : [
+		shared_event : [
 			"reset"
 		],
 
@@ -54,10 +53,10 @@
 
 			var self, body, event_circle, define_event, event_by_parent_definition
 
-			self             = this
-			define.append_to = define.part.append_to
-			define.part      = ( define.part.part ? define.part.part : define.part )
-			body             = this.library.transistor.make( this.define_body({
+			self                       = this
+			define.append_to           = define.part.append_to
+			define.part                = ( define.part.part ? define.part.part : define.part )
+			body                       = this.library.transistor.make( this.define_body({
 				class_name : define.class_name,
 				part       : define.part,
 			}))
@@ -65,16 +64,16 @@
 				class_name : define.class_name,
 				body       : body.body
 			})
-			define_event     = this.define_event(event_by_parent_definition)
-			console.log( define_event )
-			event_circle     = Object.create( this.library.event_master ).make({
+			event_circle               = Object.create( this.library.event_master ).make({
 				state  : {
 					option : this.define_state_option({
 						part : define.part,
 						body : body
 					}),
 				},
-				events : define_event
+				events : this.define_event( 
+					event_by_parent_definition 
+				)
 			})
 			event_circle.add_listener( this.define_listener({
 				class_name   : define.class_name,
@@ -90,30 +89,50 @@
 			}
 
 			return this.define_interface({
-				body           : body,
-				state          : event_circle,
-				// event_name_map :  
+				body                       : body,
+				event_circle               : event_circle,
+				event_by_parent_definition : event_by_parent_definition,
+				shared_event               : this.shared_event
 			})
 		},
 
 		define_interface : function ( define ) {
+			var self = this
 			return {
 				body    : define.body,
 				state   : function () {
-					return define.state.get_state()
+					return define.event_circle.get_state()
 				},
-				// trigger : function ( what ) {
-				// 	console.log( self )
-				// 	self.library.morph.index_loop({
-				// 		"subject" : self.library.morph.get_the_values_of_an_object(
-				// 			self.part_name_to_package_name
-				// 		),
-				// 		"else_do" : function ( loop ) {
-				// 			console.log( self.library[loop.indexed] )
-				// 		}
-				// 	})
-				// }
+				stage : function ( what ) {
+					if ( define.shared_event.indexOf( what ) > -1 ) { 
+						self.stage_shared_events({
+							event_circle               : define.event_circle,
+							event_by_parent_definition : define.event_by_parent_definition,
+							event                      : what,
+						})
+					} else { 
+						console.warn("event "+ what +" is not a shared event")
+					}
+				}
 			}
+		},
+
+		stage_shared_events : function ( what ) {
+
+			this.library.morph.object_loop({
+				"subject" : what.event_by_parent_definition,
+				"into?"   : [],
+				"else_do" : function ( loop ) {
+
+					if ( loop.value.hasOwnProperty( what.event ) ) {
+						what.event_circle.stage_event({
+							called : loop.value[what.event].called 
+						})
+					}
+
+					return []
+				}
+			})
 		},
 
 		define_state_option : function ( define ) {
@@ -147,51 +166,26 @@
 
 			var self
 			self = this
+
 			return this.library.morph.object_loop({
 				"subject" : event_by_parent_definition,
 				"into?"   : [],
-				"else_do" : function ( loop ) { 
-					console.log( loop.value )
+				"else_do" : function ( loop ) {
 					return { 
 						into : loop.into.concat(
-							self.library.morph.index_loop({
-								subject : "",
-								else_do : function ( loop ) {}
+							self.library.morph.object_loop({
+								"subject" : loop.value,
+								"into?"   : [],
+								"else_do" : function ( loop ) {
+									return { 
+										into : loop.into.concat(loop.value)
+									}
+								}
 							})
 						)
 					}
 				}
 			})
-
-			// return this.library.morph.index_loop({
-			// 	"subject" : define.package_name,
-			// 	"if_done" : function ( loop ) {
-			// 		return loop.into
-			// 	},
-			// 	"else_do" : function ( loop ) {
-
-			// 		if ( self.library[loop.indexed].hasOwnProperty("define_event") ) {
-
-			// 			return loop.into.concat( 
-			// 				self.library.morph.index_loop({
-			// 					"subject" : self.library[loop.indexed].define_event({
-			// 						with : define.with
-			// 					}),
-			// 					"if_done" : function ( event_loop ) {
-			// 						return event_loop.into
-			// 					},
-			// 					"else_do" : function ( event_loop ) {
-			// 						event_loop.indexed.called = loop.indexed +" "+ event_loop.indexed.called
-			// 						return event_loop.into.concat( event_loop.indexed )
-			// 					}
-			// 				})
-			// 			)
-
-			// 		} else { 
-			// 			return loop.into
-			// 		}
-			// 	}
-			// })
 		},
 
 		define_event_by_parent_definition_map : function ( define_with ) {
@@ -272,11 +266,13 @@
 				"child" : this.loop_through_parts_and_perform_action({
 					define : define,
 					action : function ( loop ) {
-						return loop.package_object.define_body({
+						var definition     = loop.package_object.define_body({
 							name       : self.convert_text_to_option_name( loop.definition.name || "" ),
 							with       : loop.definition.with,
 							class_name : define.class_name[loop.definition.type]
 						})
+						definition.mark_as = loop.package_name
+						return definition
 					}
 				})
 			}

@@ -119,18 +119,20 @@ body {
   width: 100%; }
 
 .radio_wrap {
-  width: 300px;
   float: left;
   background-color: #333333;
   clear: both;
-  color: white; }
+  color: white;
+  margin: 10px 0px; }
 
 .radio_base, .radio_item, .radio_item_selected {
   width: 100px;
   padding: 20px;
   float: left;
   display: inline-block;
-  color: white; }
+  cursor: pointer;
+  color: white;
+  width: 100px; }
 
 .radio_item {
   background-color: #333333; }
