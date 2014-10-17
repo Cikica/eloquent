@@ -122,7 +122,7 @@
 			this.library.morph.object_loop({
 				"subject" : what.event_by_parent_definition,
 				"into?"   : [],
-				"else_do" : function ( loop ) {
+				else_do   : function ( loop ) {
 
 					if ( loop.value.hasOwnProperty( what.event ) ) {
 						what.event_circle.stage_event({
@@ -170,13 +170,13 @@
 			return this.library.morph.object_loop({
 				"subject" : event_by_parent_definition,
 				"into?"   : [],
-				"else_do" : function ( loop ) {
+				else_do   : function ( loop ) {
 					return { 
 						into : loop.into.concat(
 							self.library.morph.object_loop({
 								"subject" : loop.value,
 								"into?"   : [],
-								"else_do" : function ( loop ) {
+								else_do   : function ( loop ) {
 									return { 
 										into : loop.into.concat(loop.value)
 									}
