@@ -206,6 +206,8 @@ define({
 // what he needs to find, 
 // returns the node needing to be found
 
-// should also have a more concrete way of assignign events to certain thigns so that hter eare no conflicts
+// should also have a more concrete way of assigning events to certain thigns so that there are no conflicts
 // in the case of using only if checkers. 
-// perhaps a context assigner as opsoded to the finder. 
+// perhaps a context assigner as opossed to the finder. 
+
+// I think that the transistor.get method fixed this i forger these things 
