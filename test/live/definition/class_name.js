@@ -26,6 +26,7 @@ define({
 		"imporant"  : "imporant_text",
 		"underline" : "imporant_text",
 		"italic"    : "italic_text",
+		"title"     : "title"
 	},
 	list : { 
 		"wrap"           : "wrap_list",

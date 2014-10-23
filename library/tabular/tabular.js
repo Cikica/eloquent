@@ -6,6 +6,37 @@ define({
 	},
 
 	make : function () {
+		
+		var tabular_body, event_circle
+
+		tabular_body = tabular_body
+		return this.define_interface({
+			body         : tabular_body,
+			event_master : event_circle
+		})
+	},
+
+	define_interface : function ( define ) {
+		return {
+			body      : define.body.body,
+			append    : define.body.append,
+			get_state : function () { 
+				return define.event_master.get_state()
+			},
+			reset     : function () {
+				define.event_master.stage_event({
+					called : "reset",
+					as     : function ( state ) { 
+						return { 
+							event : { 
+								target : define.body.body
+							},
+							state : state
+						}
+					}
+				})
+			}
+		}
 	},
 
 	define_body : function ( define ) {

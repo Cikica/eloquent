@@ -38,10 +38,10 @@
 			"input"  : "shumput",
 			"list"   : "list",
 			"text"   : "text",
+			"table"  : "tabular",
 			// "tree"   : "tree_option",
 			// "date"   : "gregor",
 			// "button" : "button",
-			// "table"  : "tabular"
 		},
 
 		shared_event : [

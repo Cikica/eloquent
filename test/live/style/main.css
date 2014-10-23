@@ -18,7 +18,7 @@ body {
 .wrap_list {
   width: 300px;
   float: left;
-  padding: 10px;
+  padding: 0px 10px;
   margin-bottom: 10px; }
 
 .wrap_list_item {
@@ -46,7 +46,7 @@ body {
 .wrap_text {
   width: 100%;
   float: left;
-  margin-bottom: 20px; }
+  margin-bottom: 10px; }
 
 .regular_text {
   text-transform: uppercase; }
@@ -56,6 +56,15 @@ body {
 
 .italic_text {
   font-style: italic; }
+
+.title {
+  width: 100%;
+  float: left;
+  color: #5cb6fa;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 18px;
+  padding: 20px 0 0; }
 
 .wrap_input {
   width: 100%;

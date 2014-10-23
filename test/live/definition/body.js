@@ -6,16 +6,9 @@ define({
 			with : {
 				content : [
 					{
-						text : "One",
+						text : "List",
+						type : "title",
 					},
-					{ 
-						type : "underline",
-						text : "Two",
-					},
-					{ 
-						type : "italic",
-						text : "Three",
-					}
 				]
 			},
 		},
@@ -36,6 +29,17 @@ define({
 					"fourth item"
 				],
 			}
+		},
+		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Radio With Conditional Input",
+						type : "title",
+					},
+				]
+			},
 		},
 		{
 			type : "radio",
@@ -69,6 +73,17 @@ define({
 			}
 		},
 		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Regular Radio",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
 			type : "radio",
 			name : "Radio First",
 			with : {
@@ -82,6 +97,17 @@ define({
 			}
 		},
 		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Radio",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
 			type : "radio",
 			name : "Radio First",
 			with : {
@@ -92,6 +118,17 @@ define({
 					]
 				}
 			}
+		},
+		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Small Input With Verification",
+						type : "title",
+					},
+				]
+			},
 		},
 		{
 			type        : "input",
@@ -113,6 +150,17 @@ define({
 			},
 		},
 		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Large Input With Verification",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
 			type : "input",
 			name : "First input",
 			with : { 
@@ -129,6 +177,17 @@ define({
 						}
 					},
 				},
+			},
+		},
+		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Dropdown",
+						type : "title",
+					},
+				]
 			},
 		},
 		{ 
