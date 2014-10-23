@@ -5,14 +5,17 @@
 }
 
 .input_base { 
-	font-family : Arial;
-	line-height : 18px;
-	font-size   : 16px;
-	width       : $unit*30;
-	padding     : $unit;
-	border      : 1px solid $ink;
-	float       : left;
+	font-family      : Arial;
+	font-size        : 14px;
+	line-height      : 18px;
+	width            : $unit*30;
+	padding          : $unit;
+	border           : 1px solid $medium_ink;
+	color            : $light;
+	background-color : $medium_ink;
+	float            : left;
 }
+
 .input_small {
 	@extend .input_base;
 }

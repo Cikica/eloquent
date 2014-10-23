@@ -6,7 +6,7 @@ define({
 		with   : {
 			test : [
 				"test/live/definition/class_name",
-				"test/live/definition/part"
+				"test/live/definition/body"
 			]
 		}
 	},

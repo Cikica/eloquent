@@ -3,12 +3,28 @@ define({
 	define : {
 		allow   : "*",
 		require : [
-			"morph"
+			"morph",
+			"transistor"
 		],
 	},
 
-	make : function () {
-		return {}
+	make : function ( define ) {
+		
+		var dropdown_body
+
+		dropdown_body = this.library.transistor.make(
+			this.define_body( define )
+		)
+		return this.define_interface({
+			body : dropdown_body
+		})
+	},
+
+	define_interface : function ( define ) {
+		return {
+			body      : define.body.body,
+			append    : define.body.append
+		}
 	},
 
 	define_body : function ( define ) {
@@ -19,10 +35,13 @@ define({
 	},
 
 	define_list : function ( define ) {
+
 		var self = this
+
 		return this.library.morph.index_loop({
 			subject : define.with.list,
 			else_do : function ( loop ) {
+
 				var item_definition
 				item_definition = self.get_item_defintion_object_from_regular_definition( loop.indexed )
 

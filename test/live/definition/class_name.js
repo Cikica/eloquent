@@ -3,7 +3,14 @@ define({
 	radio : {
 		"wrap"          : "radio_wrap",
 		"item"          : "radio_item",
-		"item_selected" : "radio_item_selected"
+		"item_selected" : "radio_item_selected",
+		"input"         : { 
+			"wrap"         : "wrap_input",
+			"text_valid"   : "input_text_valid",
+			"text_invalid" : "input_text_invalid",
+			"small"        : "input_small",
+			"large"        : "input_large"
+		}
 	},
 	select : { 
 		"main"                 : "dropdown_main",

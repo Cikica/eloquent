@@ -3,12 +3,20 @@ define({
 	define : {
 		allow   : "*",
 		require : [
-			"morph"
+			"morph",
+			"transistor"
 		],
 	},
 
-	make : function () {
-		return {}
+	make : function ( define ) {
+		var text_body
+		text_body = this.library.transistor.make(
+			this.define_body( define )
+		)
+		return {
+			body   : text_body.body,
+			append : text_body.append
+		}
 	},
 
 	define_body : function ( define ) {

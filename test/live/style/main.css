@@ -11,17 +11,20 @@ body {
   font-family: Arial;
   font-size: 14px;
   line-height: 18px;
-  color: #333333; }
+  color: #333333;
+  background-color: #404040;
+  color: white; }
 
 .wrap_list {
-  width: 100%;
+  width: 300px;
   float: left;
+  padding: 10px;
   margin-bottom: 10px; }
 
 .wrap_list_item {
   width: 100%;
   float: left;
-  margin-bottom: 10px; }
+  padding: 10px; }
 
 .list_item_text_wrap {
   float: left;
@@ -29,14 +32,14 @@ body {
 
 .list_item_notation {
   float: left;
-  display: inline-block; }
+  display: inline-block;
+  width: 20px; }
 
 .list_item_text {
   float: left;
   display: inline-block; }
 
 .list_item_list {
-  margin-left: 10px;
   float: left;
   width: 100%; }
 
@@ -61,11 +64,13 @@ body {
 
 .input_base, .input_small, .input_large {
   font-family: Arial;
+  font-size: 14px;
   line-height: 18px;
-  font-size: 16px;
   width: 300px;
   padding: 10px;
-  border: 1px solid #333333;
+  border: 1px solid #444444;
+  color: white;
+  background-color: #444444;
   float: left; }
 
 .input_text_base, .input_text_valid, .input_text_invalid {
@@ -120,17 +125,17 @@ body {
 
 .radio_wrap {
   float: left;
-  background-color: #333333;
   clear: both;
   color: white;
   margin: 10px 0px; }
 
 .radio_base, .radio_item, .radio_item_selected {
   width: 100px;
-  padding: 20px;
+  padding: 10px;
   float: left;
   display: inline-block;
   cursor: pointer;
+  background-color: #333333;
   color: white;
   width: 100px; }
 

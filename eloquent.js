@@ -33,15 +33,15 @@
 		},
 
 		part_name_to_package_name : { 
+			"select" : "dropdown",
 			"radio"  : "keyswitch",
-			"text"   : "text",
 			"input"  : "shumput",
 			"list"   : "list",
-			"select" : "dropdown",
-			"tree"   : "tree_option",
-			"date"   : "gregor",
-			"button" : "button",
-			"table"  : "tabular"
+			"text"   : "text",
+			// "tree"   : "tree_option",
+			// "date"   : "gregor",
+			// "button" : "button",
+			// "table"  : "tabular"
 		},
 
 		shared_event : [
@@ -51,68 +51,59 @@
 		make : function ( define ) {
 			
 
-			var self, body, event_circle, define_event, event_by_parent_definition
+			var self, eloquent_parts, eloquent_body
 
-			self                       = this
-			define.append_to           = define.part.append_to
-			define.part                = ( define.part.part ? define.part.part : define.part )
-			body                       = this.library.transistor.make( this.define_body({
-				class_name : define.class_name,
-				part       : define.part,
-			}))
-			event_by_parent_definition = this.define_event_by_parent_definition_map({
-				class_name : define.class_name,
-				body       : body.body
+			self           = this
+			eloquent_body  = this.library.transistor.make({
+				"class" : define.class_name.wrap
 			})
-			event_circle               = Object.create( this.library.event_master ).make({
-				state  : {
-					option : this.define_state_option({
-						part : define.part,
-						body : body
-					}),
-				},
-				events : this.define_event( 
-					event_by_parent_definition 
-				)
-			})
-			event_circle.add_listener( this.define_listener({
-				class_name   : define.class_name,
-				part_name    : this.library.morph.get_the_keys_of_an_object( this.part_name_to_package_name ),
-				package_name : this.library.morph.get_the_values_of_an_object( this.part_name_to_package_name ),
-				with         : {}
-			}))
+			eloquent_parts = this.library.morph.index_loop({
+				subject : define.body.part,
+				else_do : function ( loop ) {
 
-			if ( define.append_to ) { 
-				body.append(
-					define.append_to
+					if ( self.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
+
+						var package_name, package_part
+						
+						package_name = self.part_name_to_package_name[loop.indexed.type]
+						package_part = self.library[package_name].make({
+							class_name : define.class_name[loop.indexed.type],
+							with       : loop.indexed.with
+						})
+
+						package_part.append( eloquent_body.body )
+
+						return loop.into.concat({
+							part_name    : loop.indexed.type,
+							package_name : package_name,
+							package_part : package_part
+						})
+
+					} else { 
+						console.warn("part of type \""+ loop.indexed.type +"\" doth not exist")
+						return loop.into
+					}
+				}
+			})
+
+			if ( define.body.append_to ) {
+				eloquent_body.append(
+					define.body.append_to
 				)
 			}
 
 			return this.define_interface({
-				body                       : body,
-				event_circle               : event_circle,
-				event_by_parent_definition : event_by_parent_definition,
-				shared_event               : this.shared_event
+				eloquent_body  : eloquent_body,
+				eloquent_parts : eloquent_parts
 			})
 		},
 
 		define_interface : function ( define ) {
-			var self = this
 			return {
-				body    : define.body,
-				state   : function () {
-					return define.event_circle.get_state()
-				},
-				stage : function ( what ) {
-					if ( define.shared_event.indexOf( what ) > -1 ) { 
-						self.stage_shared_events({
-							event_circle               : define.event_circle,
-							event_by_parent_definition : define.event_by_parent_definition,
-							event                      : what,
-						})
-					} else { 
-						console.warn("event "+ what +" is not a shared event")
-					}
+				body      : define.eloquent_body.body,
+				part      : define.eloquent_parts,
+				get_state : function () {
+
 				}
 			}
 		},

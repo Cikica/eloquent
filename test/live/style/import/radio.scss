@@ -1,19 +1,19 @@
 .radio_wrap {
 	float            : left;
-	background-color : $ink;
 	clear            : both;
 	color            : $light;
 	margin           : $unit 0px;
 }
 
 .radio_base { 
-	width   : $unit*10;
-	padding : $unit*2;
-	float   : left;
-	display : inline-block;
-	cursor  : pointer;
-	color   : $light;
-	width   : $unit*10;
+	width            : $unit*10;
+	padding          : $unit;
+	float            : left;
+	display          : inline-block;
+	cursor           : pointer;
+	background-color : $ink;
+	color            : $light;
+	width            : $unit*10;
 }
 
 .radio_item {
