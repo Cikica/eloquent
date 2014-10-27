@@ -1,14 +1,26 @@
 define({
 	append_to : document.body,
 	part      : [
+		{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Tree Option",
+						type : "title",
+					},
+				]
+			},
+		},
 		{ 
 			type : "tree",
+			name : "main tree option",
 			with : { 
 				tree : {
-					"name":"it_logger",
-					"text":"IT Logger",
-					"popup":false,
-					"child":[
+					"name"  : "it_logger",
+					"text"  : "IT Logger",
+					"popup" : false,
+					"child" : [
 						{ 
 							"text"  : "zero level yodelihuhuh",
 							"child" : [
@@ -56,6 +68,7 @@ define({
 		},
 		{
 			type : "list",
+			name : "list test",
 			with : {
 				notation : "*",
 				list     : [
@@ -85,7 +98,7 @@ define({
 		},
 		{
 			type : "radio",
-			name : "Some some",
+			name : "radio test one",
 			with : {
 				option : {
 					choice : [
@@ -127,7 +140,7 @@ define({
 		},
 		{
 			type : "radio",
-			name : "Radio First",
+			name : "radio test two",
 			with : {
 				option : {
 					choice : [
@@ -151,7 +164,7 @@ define({
 		},
 		{
 			type : "radio",
-			name : "Radio First",
+			name : "radio second",
 			with : {
 				option : {
 					choice : [
@@ -174,7 +187,7 @@ define({
 		},
 		{
 			type        : "input",
-			name        : "second input",
+			name        : "input test",
 			with : { 
 				placeholder : "This be the place",
 				value       : "Some somesome",
@@ -204,7 +217,7 @@ define({
 		},
 		{
 			type : "input",
-			name : "First input",
+			name : "input test",
 			with : { 
 				size        : "large",
 				value       : "some",
@@ -234,7 +247,7 @@ define({
 		},
 		{ 
 			type : "select",
-			name : "First drop",
+			name : "dropdown test",
 			with : {
 				option : {
 					choice : [

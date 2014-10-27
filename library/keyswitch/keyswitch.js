@@ -10,6 +10,20 @@ define({
 		],
 	},
 
+	// this.remake({
+	// 	original : Object,
+	// 	with     : {
+	// 		listener : {
+	// 			"0" : {
+	// 				with : Object
+	// 			}
+	// 		}
+	// 	}
+	// })
+
+	remake : function ( what ) {
+	},
+
 	make : function ( define ) {
 
 		var keyswitch_body, event_circle, shumput_part, default_value
@@ -49,7 +63,7 @@ define({
 		return this.define_interface({
 			body              : keyswitch_body,
 			event_master      : event_circle,
-			shumput           : shumput_part || false
+			get_shumput_state : ( shumput_part ? shumput_part.get_state : false )
 		})
 	},
 
@@ -59,7 +73,7 @@ define({
 				if ( define.get_shumput_state !== false ) {
 					return { 
 						option : define.event_master.get_state(),
-						input  : define.shumput.get_state()
+						input  : define.get_shumput_state()
 					}
 				} else { 
 					return define.event_master.get_state()
