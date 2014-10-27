@@ -23,8 +23,6 @@ define({
 		"library/shumput",
 		"library/dropdown",
 		"library/keyswitch",
-		"library/button",
 		"library/gregor",
-		"library/tabular",
 	]
 })

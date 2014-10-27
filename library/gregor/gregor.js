@@ -17,6 +17,10 @@ define({
 		console.log("entrude young messenger")
 	},
 
+	define_interface : function () { 
+
+	},
+
 	define_state : function ( define ) {
 		return this.library.event.define_state( define )
 	},

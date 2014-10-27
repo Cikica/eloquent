@@ -1,0 +1,134 @@
+.tree_wrap { 
+	width : 100%;
+	float : left
+}
+
+.tree_tree_wrap { 
+	width         : 100%;
+	float         : left;	
+	margin-bottom : $unit;
+}
+
+.tree_branch_text_badge { 
+	display          : inline-block;
+	float            : left;
+	font-weight      : bold;
+	margin-right     : $unit;
+	padding          : $unit;
+	width            : $unit*4;
+	text-align       : center;
+	background-color : $ink;
+	cursor           : pointer;
+}
+
+.tree_branch_text { 
+	display          : inline-block;
+	float            : left;
+	padding          : $unit;
+	background-color : $light_ink;
+	cursor           : pointer;
+}
+
+.tree_branch {
+	float      : left;
+	width      : 100%;
+	margin-top : $unit;
+}
+
+.tree_branch_children { 
+	display     : block;
+	float       : left;
+	clear       : both;
+	margin-left : $unit*5;
+}
+
+.tree_branch_text_wrap { 
+	float : left;
+	width : 100%;
+}
+
+.tree_branch_text_wrap_active { 
+	float : left;
+	width : 100%;
+}
+
+.tree_branch_text_option_wrap_active { 
+	display : inline-block;
+	float   : left;
+}
+
+.tree_branch_text_option_wrap { 
+
+}
+
+.tree_branch_text_option { 
+	display          : inline-block;
+	float            : left;
+	width            : $unit*4;
+	height           : $unit*4;
+	margin-right     : $unit;
+	background-color : $ink;
+}
+
+.tree_branch_text_option_active { 
+	@extend .tree_branch_text_option;
+	background-color: $blue;
+}
+
+.tree_branch_text_option_button_wrap { 
+	margin-left : $unit;
+	display     : inline-block;
+	float       : left;
+}
+
+.tree_branch_text_option_button { 
+
+}
+
+.tree_result_wrap { 
+	width            : 100%;
+	float            : left;
+}
+
+.tree_result_path_wrap { 
+	width            : 100%;
+	float            : left;
+	margin-bottom    : $unit;
+	background-color : $ink;
+	padding          : $unit;
+}
+
+.tree_result_text { 
+	font-weight  : bold;
+	display      : inline-block;
+	float        : left;		
+	margin-right : $unit;
+}
+
+.tree_result_choice { 
+	display      : inline-block;
+	float        : left;
+	margin-right : $unit;
+}
+
+
+.tree_result_path { 
+	display : inline-block;
+	float   : left;
+}
+
+.tree_result_button_wrap { 
+	width : 100%;
+	float : left;
+}
+
+.tree_result_button {
+	float            : left;
+	font-weight      : bold;
+	padding          : $unit;
+	background-color : $light_ink;
+	cursor           : pointer;
+	&:hover { 
+		background-color: $ink;
+	}
+}

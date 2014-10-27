@@ -5,7 +5,6 @@ define({
 	},
 	make   : function ( what ) {
 		var self = this
-		console.log( what.control_map )
 		return {
 			body   : what.body,
 			get    : function ( mark ) { 

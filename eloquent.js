@@ -26,9 +26,7 @@
 				"dropdown",
 				"list",
 				"tree_option",
-				"gregor",
-				"button",
-				"tabular"
+				// "gregor",
 			]
 		},
 
@@ -38,10 +36,8 @@
 			"input"  : "shumput",
 			"list"   : "list",
 			"text"   : "text",
-			"table"  : "tabular",
-			// "tree"   : "tree_option",
+			"tree"   : "tree_option",
 			// "date"   : "gregor",
-			// "button" : "button",
 		},
 
 		shared_event : [
@@ -64,7 +60,7 @@
 					if ( self.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
 
 						var package_name, package_part
-						
+
 						package_name = self.part_name_to_package_name[loop.indexed.type]
 						package_part = self.library[package_name].make({
 							class_name : define.class_name[loop.indexed.type],

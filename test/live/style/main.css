@@ -10,7 +10,7 @@ body {
   padding: 20px;
   font-family: Arial;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 20px;
   color: #333333;
   background-color: #404040;
   color: white; }
@@ -153,3 +153,108 @@ body {
 
 .radio_item_selected {
   background-color: #555555; }
+
+.tree_wrap {
+  width: 100%;
+  float: left; }
+
+.tree_tree_wrap {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px; }
+
+.tree_branch_text_badge {
+  display: inline-block;
+  float: left;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 10px;
+  width: 40px;
+  text-align: center;
+  background-color: #333333;
+  cursor: pointer; }
+
+.tree_branch_text {
+  display: inline-block;
+  float: left;
+  padding: 10px;
+  background-color: #555555;
+  cursor: pointer; }
+
+.tree_branch {
+  float: left;
+  width: 100%;
+  margin-top: 10px; }
+
+.tree_branch_children {
+  display: block;
+  float: left;
+  clear: both;
+  margin-left: 50px; }
+
+.tree_branch_text_wrap {
+  float: left;
+  width: 100%; }
+
+.tree_branch_text_wrap_active {
+  float: left;
+  width: 100%; }
+
+.tree_branch_text_option_wrap_active {
+  display: inline-block;
+  float: left; }
+
+.tree_branch_text_option, .tree_branch_text_option_active {
+  display: inline-block;
+  float: left;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  background-color: #333333; }
+
+.tree_branch_text_option_active {
+  background-color: #5cb6fa; }
+
+.tree_branch_text_option_button_wrap {
+  margin-left: 10px;
+  display: inline-block;
+  float: left; }
+
+.tree_result_wrap {
+  width: 100%;
+  float: left; }
+
+.tree_result_path_wrap {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px;
+  background-color: #333333;
+  padding: 10px; }
+
+.tree_result_text {
+  font-weight: bold;
+  display: inline-block;
+  float: left;
+  margin-right: 10px; }
+
+.tree_result_choice {
+  display: inline-block;
+  float: left;
+  margin-right: 10px; }
+
+.tree_result_path {
+  display: inline-block;
+  float: left; }
+
+.tree_result_button_wrap {
+  width: 100%;
+  float: left; }
+
+.tree_result_button {
+  float: left;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #555555;
+  cursor: pointer; }
+  .tree_result_button:hover {
+    background-color: #333333; }

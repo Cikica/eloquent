@@ -1,6 +1,48 @@
 define({
 	append_to : document.body,
 	part      : [
+		{ 
+			type : "tree",
+			with : { 
+				tree : {
+					"name":"it_logger",
+					"text":"IT Logger",
+					"popup":false,
+					"child":[
+						{ 
+							"text"  : "zero level yodelihuhuh",
+							"child" : [
+								{ 
+									"text" : "Some name some"
+								}
+							]
+						},
+						{
+							"text":"First Level Yo",
+							"child":[
+								{
+									"text"  : "Some Name here",
+									"child" : [
+										{ 
+											"text" : "Some name here"
+										}
+									]
+								},
+								{
+									"text" : "Some Random Stuff"
+								}
+							]
+						}
+					]
+				},
+				button : [
+					"Blow Your Mind"
+				],
+				submit : function () {
+					console.log(" KABOOOM ")
+				}
+			}
+		},
 		{
 			type : "text",
 			with : {
