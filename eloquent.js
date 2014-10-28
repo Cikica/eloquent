@@ -120,6 +120,7 @@
 			return {
 				body      : define.eloquent_body.body,
 				part      : define.eloquent_parts,
+				append    : define.eloquent_body.append,
 				reset     : function () { 
 					return self.library.morph.index_loop({
 						subject : define.eloquent_parts,
