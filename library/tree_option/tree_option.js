@@ -182,10 +182,9 @@ define({
 						in_context   : heard.event.target.getAttribute("data-tree-submit"),
 						option_state : option_state,
 						state        : heard.state,
-						event        : heard.event
+						event        : heard.event,
+						remake       : heard.state.remake || {}
 					})
-					
-					heard.state.remake.reset()
 
 					return heard
 				}
