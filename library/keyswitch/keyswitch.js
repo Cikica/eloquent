@@ -136,7 +136,7 @@ define({
 	},
 
 	define_listener : function ( define ) {
-		console.log( define )
+		
 		var self = this
 		return [
 			{ 

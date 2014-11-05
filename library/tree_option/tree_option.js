@@ -10,7 +10,7 @@ define({
 	},
 
 	make : function ( define ) {
-
+		console.log( define )
 		var tree_option_body, event_circle
 		
 		tree_option_body = this.library.transistor.make(
@@ -183,7 +183,10 @@ define({
 						option_state : option_state,
 						state        : heard.state,
 						event        : heard.event,
-						remake       : heard.state.remake || {}
+						button_data  : self.get_data_type_attribute_valuee_from_node( 
+							heard.state.chosen.node
+						),
+						remake       : heard.state.remake || {},
 					})
 
 					return heard
@@ -201,7 +204,6 @@ define({
 					)
 					name         = node.getAttribute("data-name")
 					option_state = heard.state
-
 					if ( option_state.chosen.node !== false ) {
 
 						option_state.chosen.node.setAttribute("class", define.class_name.branch_text_option_wrap )
@@ -354,7 +356,7 @@ define({
 					return {
 						into : loop.into.concat({ 
 							"class" : define.class_name.branch,
-							"child" : self.define_tree_branch_option_text({
+							"child" : self.define_tree_branch_option_text_and_button({
 								define     : loop.value,
 								parent     : define.parent,
 								class_name : define.class_name,
@@ -372,7 +374,7 @@ define({
 			else_do : function ( loop ) {
 				return {
 					into : loop.into.concat(
-						self.define_tree_branch_option_text({
+						self.define_tree_branch_option_text_and_button({
 							define     : loop,
 							name       : define.name,
 							parent     : define.parent,
@@ -385,31 +387,44 @@ define({
 		})
 	},
 
-	define_tree_branch_option_text : function ( branch ) {
+	define_tree_branch_option_text_and_button : function ( branch ) {
+		
 		return [
-			{
-				"class"             : branch.class_name.branch_text_option_wrap,
-				"data-tree-option"  : "true",
-				"data-option-value" : branch.define.text,
-				"data-option-path"  : branch.parent.join(" -> "),
-				"data-name"         : branch.name,
-				"child"             : [
-					{
-						"class" : branch.class_name.branch_text_option
-					},
-					{
-						"class" : branch.class_name.branch_text,
-						"text"  : branch.define.text
-					},
-				]
-			},
+			this.library.morph.object_loop({
+				"subject" : branch.define,
+				"into?"   : {
+					"class"             : branch.class_name.branch_text_option_wrap,
+					"data-tree-option"  : "true",
+					"data-option-value" : branch.define.text,
+					"data-option-path"  : branch.parent.join(" -> "),
+					"child"             : [
+						{
+							"class" : branch.class_name.branch_text_option
+						},
+						{
+							"class" : branch.class_name.branch_text,
+							"text"  : branch.define.text
+						},
+					]
+				},
+				"if_done?" : function ( loop ) { 
+					return loop.into
+				},
+				else_do : function ( loop ) {
+					
+					if ( loop.key !== "text" ) { 
+						loop.into["data-"+loop.key] = loop.value
+					}
+
+					return loop.into
+				}
+			}),
 			{
 				"class"   : branch.class_name.branch_text_option_button_wrap,
 				"display" : "none",
 				"child"   : this.define_button({
-					button     : branch.button,
-					class_name : branch.class_name,
-					name       : branch.name
+					button         : branch.button,
+					class_name     : branch.class_name
 				})
 			}
 		]
@@ -447,6 +462,7 @@ define({
 	},
 
 	define_call_option_tree_result : function ( define ) {
+
 		return { 
 			"class"   : define.class_name.result_wrap,
 			"mark_as" : "result",
@@ -480,24 +496,44 @@ define({
 					"child" : this.define_button({
 						button     : define.with.button,
 						class_name : define.class_name,
-						name       : define.name
 					})
 				}
 			]
 		}
 	},
 
-	define_button : function ( define ) { 
+	define_button : function ( define ) {
+		var self = this
 		return this.library.morph.index_loop({
 			subject : define.button,
 			else_do : function ( loop ) {
 				return loop.into.concat({
 					"class"            : define.class_name.result_button,
 					"data-tree-submit" : loop.indexed,
-					"data-name"        : define.name,
 					"text"             : loop.indexed
 				})
 			}
 		})
+	},
+
+	get_data_type_attribute_valuee_from_node : function ( node ) {
+
+		var node_attributes = {}
+		for ( var attribute in node.attributes ) {
+
+			if ( !isNaN( attribute ) && node.attributes[attribute].name.match("data-") !== null ) {
+
+				var attribute_name = node.attributes[attribute].name.replace(/(data-|-)/g, function ( match ) { 
+					if ( match === "data-" ) { 
+						return ""
+					}
+					if ( match === "-" ) { 
+						return "_"
+					}
+				})
+				node_attributes[attribute_name] = node.attributes[attribute].value
+			}
+		}
+		return node_attributes
 	}
 })
