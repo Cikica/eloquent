@@ -10,7 +10,7 @@ define({
 	},
 
 	make : function ( define ) {
-		console.log( define )
+		
 		var tree_option_body, event_circle
 		
 		tree_option_body = this.library.transistor.make(
