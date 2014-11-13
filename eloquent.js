@@ -53,6 +53,7 @@
 			eloquent_body  = this.library.transistor.make({
 				"class" : define.class_name.wrap
 			})
+			
 			eloquent_parts = this.library.morph.index_loop({
 				subject : define.body.part,
 				else_do : function ( loop ) {
@@ -87,6 +88,7 @@
 					}
 				}
 			})
+
 			eloquent_interface = this.define_interface({
 				eloquent_body   : eloquent_body,
 				eloquent_parts  : eloquent_parts
@@ -98,10 +100,12 @@
 				)
 			}
 
+			// there might be a better way to add global acess
 			this.library.morph.index_loop({
 				subject : eloquent_parts,
 				else_do : function ( loop ) {
-					if ( loop.indexed.package_part.set_state ) { 
+
+					if ( loop.indexed.package_part.set_state ) {
 						var state    = loop.indexed.package_part.get_state()
 						state.remake = eloquent_interface
 						loop.indexed.package_part.set_state( state )
