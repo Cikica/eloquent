@@ -130,7 +130,7 @@ define({
 				that_does : function ( heard ) {
 
 					var input_node, option_state
-
+					
 					input_node         = heard.event.target
 					option_state       = heard.state
 					option_state.value = input_node.value
