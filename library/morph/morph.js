@@ -10,62 +10,6 @@
 		define : { 
 			allow : "*"
 		},
-		// a structure perserving map
-		homomorph : function (what) {
-			
-			var set, with_function_for_nested_objects, with_function, count
-
-			count                            = -1
-			set                              = ( what.set === "array" ? [] : {} )
-			with_function_for_nested_objects = function (member) {
-				return member.value
-			}
-			with_function                    = what.with || with_function_for_nested_objects
-
-
-			for ( var property in what.object ) {
-
-				if ( what.object.hasOwnProperty(property) ) {
-
-					var new_value, count
-					count     = count + 1
-					new_value = what.object[property]
-
-					if ( what.object[property].constructor === Object )
-						new_value = this.homomorph({
-							object : what.object[property],
-							with   : with_function_for_nested_objects
-						})
-
-					if ( what.object[property].constructor === Array )
-						new_value = what.object[property].slice(0)
-
-					if ( set.constructor === Array ) {
-						var return_value = with_function.call({}, {
-							value         : new_value,
-							property_name : property,
-							set           : set,
-							count         : count
-						})
-						set = set.concat(( 
-							return_value.constructor === Array ?
-							[return_value] :
-							return_value
-						))
-					}
-					
-					if ( set.constructor === Object )
-						set[property] = with_function.call({}, {
-							value         : new_value,
-							property_name : property,
-							set           : set,
-							count         : count
-						})
-				}
-			}
-
-			return set
-		},
 
 		inject_array : function ( what ) {
 			
@@ -425,7 +369,11 @@
 			var self = this
 
 			return this.index_loop_base({
-				subject  : loop.subject,
+				subject  : ( 
+					loop.subject.constructor === HTMLCollection ? 
+						self.convert_node_list_to_array( loop.subject ) :
+						loop.subject 
+				),
 				start_at : loop.start_at || 0,
 				into     : this.replace_with_default({ what : loop.into, default : [] }),
 				if_done  : loop.if_done  || function (base_loop) {
@@ -512,7 +460,10 @@
 						})
 					}
 					
-					if ( loop["into?"] !== undefined ) {
+					if ( 
+						loop["into?"]    !== undefined &&
+						loop["if_done?"] === undefined
+					) {
 						result = base_loop.map.into
 					}
 
@@ -543,8 +494,31 @@
 
 		},
 
+		convert_node_list_to_array : function ( node_list ) { 
+			return this.base_loop({
+				node_list    : node_list,
+				node_array   : [],
+				index        : 0,
+				is_done_when : function ( loop ) {
+					return ( loop.index >= loop.node_list.length )
+				},
+				if_done      : function ( loop ) {
+					return loop.node_array
+				},
+				else_do      : function ( loop ) {
+					return { 
+						node_list    : loop.node_list,
+						index        : loop.index + 1,
+						node_array   : loop.node_array.concat( loop.node_list[loop.index] ),
+						is_done_when : loop.is_done_when,
+						if_done      : loop.if_done,
+						else_do      : loop.else_do,
+					}
+				}
+			})
+		},
+
 		copy : function (copy) {
-			
 			if ( copy.what.constructor === Array && copy.object_array ) {
 				return this.index_loop({
 					array   : copy.what,
@@ -559,10 +533,13 @@
 			}
 			
 			if (copy.what.constructor === Object) {
-				return this.homomorph({
-					object : copy.what,
-					with   : function (member) {
-						return member.value
+				return this.object_loop({
+					subject : copy.what,
+					else_do : function ( loop ) {
+						return {
+							key   : loop.key,
+							value : loop.value
+						}
 					}
 				})
 			}
