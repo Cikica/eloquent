@@ -9,6 +9,7 @@ define({
 	},
 
 	make : function ( define ) {
+		
 		var text_body
 		text_body = this.library.transistor.make(
 			this.define_body( define )

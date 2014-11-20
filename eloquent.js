@@ -25,7 +25,8 @@
 				"shumput",
 				"dropdown",
 				"list",
-				"tree_option"
+				"tree_option",
+				"table",
 				// "gregor",
 			]
 		},
@@ -36,7 +37,8 @@
 			"input"  : "shumput",
 			"list"   : "list",
 			"text"   : "text",
-			"tree"   : "tree_option"
+			"tree"   : "tree_option",
+			"table"  : "table",
 			// "date"   : "gregor",
 		},
 
@@ -61,7 +63,6 @@
 					if ( self.part_name_to_package_name.hasOwnProperty( loop.indexed.type ) ) {
 
 						var package_name, package_part
-
 						package_name = self.part_name_to_package_name[loop.indexed.type]
 						package_part = self.library[package_name].make({
 							class_name : define.class_name[loop.indexed.type],

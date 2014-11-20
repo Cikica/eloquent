@@ -20,9 +20,10 @@ define({
 		"library/transistor",
 		"library/text",
 		"library/list",
+		"library/table",
 		"library/shumput",
 		"library/dropdown",
 		"library/keyswitch",
-		"library/gregor"
+		"library/gregor",
 	]
 })
