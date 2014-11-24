@@ -6,19 +6,51 @@ define({
 			"morph",
 			"transistor",
 			"calendar_logic",
-			"event",
 			"body",
-			"listener"
+			"event",
+			"listener",
+			"event_master"
 		]
 	},
 
-	make : function () {
-		console.log( this.get_day().next_day().date )
-		console.log("entrude young messenger")
+	make : function ( define ) {
+		
+		var gregor_body, event_circle
+		gregor_body = this.library.transistor.make(
+			this.define_body(
+				define
+			)
+		)
+		event_circle = this.library.event_master.make({
+			state  : this.define_state({
+				body : gregor_body,
+				with : define
+			}),
+			events : this.define_event({
+				body : gregor_body,
+				with : define
+			})
+		})
+		event_circle.add_listener(
+			this.define_listener({
+				body : gregor_body,
+				with : define
+			})
+		)
+
+		return this.define_interface({
+			body              : gregor_body,
+			event_master      : event_circle
+		})
 	},
 
-	define_interface : function () { 
-
+	define_interface : function ( define ) {
+		return { 
+			body   : define.body.body,
+			append : function ( to_what ) { 
+				define.body.append( to_what ) 
+			}
+		}
 	},
 
 	define_state : function ( define ) {

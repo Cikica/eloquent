@@ -8,7 +8,7 @@ define({
 
 	define_state : function ( define ) { 
 		return {
-			body  : define.body.get("gregor "+ define.for ),
+			body  : define.body.get("gregor"),
 			map   : {},
 			value : this.library.calendar_logic.get_day()
 		}
@@ -18,10 +18,34 @@ define({
 		var self = this
 		return [
 			{ 
+				called       : "gregor choose year",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) {
+					return ( heard.event.target.hasAttribute("data-gregor-choosen-year") )
+				}
+			},
+			{ 
+				called       : "gregor open year choice",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) {
+					return ( heard.event.target.hasAttribute("data-gregor-set-year") )
+				}
+			},
+			{ 
 				called       : "gregor chose month",
 				that_happens : [
 					{ 
-						on : define.with.body,
+						on : define.body.body,
 						is : [ "click" ]
 					}
 				],
@@ -33,7 +57,7 @@ define({
 				called       : "gregor toggle calendar",
 				that_happens : [
 					{ 
-						on : define.with.body,
+						on : define.body.body,
 						is : [ "click" ]
 					}
 				],
@@ -45,7 +69,7 @@ define({
 				called       : "gregor chose date",
 				that_happens : [
 					{ 
-						on : define.with.body,
+						on : define.body.body,
 						is : [ "click" ]
 					}
 				],

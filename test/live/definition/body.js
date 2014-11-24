@@ -6,6 +6,25 @@ define({
 			with : {
 				content : [
 					{
+						text : "Calendar",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
+			type : "date",
+			with : { 
+				input : { 
+					text : "Set Date"
+				}
+			}
+		},
+		{
+			type : "text",
+			with : {
+				content : [
+					{
 						text : "Tree Option",
 						type : "title",
 					},
@@ -17,8 +36,8 @@ define({
 			name : "main tree option",
 			with : { 
 				tree : {
-					"name"  : "it_logger",
-					"text"  : "IT Logger",
+					"name"  : "Test",
+					"text"  : "Tree",
 					"popup" : false,
 					"child" : [
 						{ 

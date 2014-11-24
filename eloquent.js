@@ -27,7 +27,7 @@
 				"list",
 				"tree_option",
 				"table",
-				// "gregor",
+				"gregor",
 			]
 		},
 
@@ -39,7 +39,7 @@
 			"text"   : "text",
 			"tree"   : "tree_option",
 			"table"  : "table",
-			// "date"   : "gregor",
+			"date"   : "gregor",
 		},
 
 		shared_event : [

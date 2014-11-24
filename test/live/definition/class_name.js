@@ -1,5 +1,22 @@
 define({
-	wrap        : "wrap_main",
+	wrap : "wrap_main",
+	date : {
+		"wrap"                         : "calendar_wrap",
+		"set_wrap"                     : "calendar_set_wrap",
+		"set_button"                   : "calendar_set_button",
+		"set_date"                     : "calendar_set_date",
+		"calendar"                     : "calendar_calendar",
+		"calendar_part"                : "calendar_calendar_part",
+		"date_month_wrap"              : "calendar_date_month_wrap",
+		"date_month_text"              : "calendar_date_month_text",
+		"date_month_wrap"              : "calendar_date_month_wrap",
+		"date_current_month_text"      : "calendar_date_current_month_text",
+		"calendar_day_name"            : "calendar_calendar_day_name",
+		"calendar_day_number_selected" : "calendar_calendar_day_number_selected",
+		"calendar_day_number"          : "calendar_calendar_day_number",
+		"calendar_year_text"           : "calendar_calendar_year_text",
+		"calendar_day_seperator"       : "calendar_calendar_day_seperator"
+	},
 	tree : { 
 		"wrap"                           : "tree_wrap",
 		"tree_wrap"                      : "tree_tree_wrap",
