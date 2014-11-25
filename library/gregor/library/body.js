@@ -32,7 +32,8 @@ define({
 			].concat( this.define_calendar({
 				class_name : define.class_name,
 				with       : define.with,
-				type       : "month",
+				type       : "day",
+				show       : false,
 				month      : this.library.calendar_logic.get_current_month_map()
 			}))
 		}
@@ -40,7 +41,7 @@ define({
 
 	define_calendar : function ( define ) {
 		return {
-			// "display" : "none",
+			"display" : ( define.show ? "block" : "none" ),
 			"class"   : define.class_name.calendar,
 			"mark_as" : "gregor calendar",
 			"child"   : this.define_calendar_body( define )

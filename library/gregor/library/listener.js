@@ -26,6 +26,7 @@ define({
 						class_name : define.with.class_name,
 						with       : {},
 						type       : "month",
+						show       : true,
 						month      : option_state.value.get_month_map(),
 						day        : option_state.value
 					}))
@@ -48,6 +49,7 @@ define({
 						class_name : define.with.class_name,
 						with       : {},
 						type       : "year",
+						show       : true,
 						month      : option_state.value.get_month_map(),
 						day        : option_state.value
 					}))
@@ -75,11 +77,11 @@ define({
 						class_name : define.with.class_name,
 						with       : {},
 						type       : "day",
+						show       : true,
 						month      : new_year.get_month_map(),
 						day        : new_year
 					}))
 					option_state.value                       = new_year
-					option_state.selected                    = false
 					calendar_body_parent.removeChild( calendar_body.body )
 					option_state.calendar.append( calendar_body_parent )
 					
