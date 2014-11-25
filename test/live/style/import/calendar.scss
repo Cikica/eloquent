@@ -87,7 +87,23 @@
 
 }
 
-.calendar_calendar_year_text { 
+.calendar_calendar_year_text {
 	@extend .calendar_calendar_day_number;
 	width : 25%;
+}
+
+.calendar_calendar_year_text_selected { 
+	@extend .calendar_calendar_year_text;
+	background-color: $blue;
+}
+
+.calendar_calendar_month_text { 
+	@extend .calendar_calendar_year_text;
+	width: 33.33%;
+}
+
+.calendar_calendar_month_text_selected {
+	@extend .calendar_calendar_month_text;
+	width            : 33.33%;
+	background-color : $blue;
 }

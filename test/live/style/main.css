@@ -314,19 +314,29 @@ body {
   display: inline-block;
   text-align: center; }
 
-.calendar_calendar_day_number, .calendar_calendar_day_number_selected, .calendar_calendar_year_text {
+.calendar_calendar_day_number, .calendar_calendar_day_number_selected, .calendar_calendar_year_text, .calendar_calendar_year_text_selected, .calendar_calendar_month_text, .calendar_calendar_month_text_selected {
   width: 14.25%;
   display: inline-block;
   text-align: center;
   padding: 10px;
   cursor: pointer; }
-  .calendar_calendar_day_number:hover, .calendar_calendar_day_number_selected:hover, .calendar_calendar_year_text:hover {
+  .calendar_calendar_day_number:hover, .calendar_calendar_day_number_selected:hover, .calendar_calendar_year_text:hover, .calendar_calendar_year_text_selected:hover, .calendar_calendar_month_text:hover, .calendar_calendar_month_text_selected:hover {
     background-color: #5CB6FA; }
 
 .calendar_calendar_day_number_selected {
   background-color: #5CB6FA; }
 
-.calendar_calendar_year_text {
+.calendar_calendar_year_text, .calendar_calendar_year_text_selected, .calendar_calendar_month_text, .calendar_calendar_month_text_selected {
   width: 25%; }
+
+.calendar_calendar_year_text_selected {
+  background-color: #5CB6FA; }
+
+.calendar_calendar_month_text, .calendar_calendar_month_text_selected {
+  width: 33.33%; }
+
+.calendar_calendar_month_text_selected {
+  width: 33.33%;
+  background-color: #5CB6FA; }
 
 /*# sourceMappingURL=main.css.map */

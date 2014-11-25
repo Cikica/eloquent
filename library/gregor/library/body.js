@@ -32,7 +32,7 @@ define({
 			].concat( this.define_calendar({
 				class_name : define.class_name,
 				with       : define.with,
-				type       : "year",
+				type       : "month",
 				month      : this.library.calendar_logic.get_current_month_map()
 			}))
 		}
@@ -60,6 +60,9 @@ define({
 		if ( define.type === "year" ) { 
 			calendar_content = this.define_calendar_year_body( define )
 		}
+		if ( define.type === "month" ) { 
+			calendar_content = this.define_calendar_month_body( define )
+		}
 
 		return [
 			{
@@ -69,9 +72,9 @@ define({
 						"class" : define.class_name.date_month_wrap,
 						"child" : [
 							{ 
-								"class"                : define.class_name.date_month_text,
-								"data-gregor-set-year" : current.date.year,
-								"text"                 : current.date.year
+								"class"                   : define.class_name.date_month_text,
+								"data-gregor-choose-year" : current.date.year,
+								"text"                    : current.date.year
 							},
 						]
 					},
@@ -84,8 +87,9 @@ define({
 								"data-gregor-set-month" : current.previous_month().date.month.number-1,
 							},
 							{
-								"class" : define.class_name.date_current_month_text,
-								"text"  : current.date.month.name,
+								"class"                    : define.class_name.date_current_month_text,
+								"data-gregor-choose-month" : current.date.month.name,
+								"text"                     : current.date.month.name,
 							},
 							{
 								"class"                 : define.class_name.date_month_text,
@@ -172,21 +176,80 @@ define({
 		]
 	},
 
-	define_calendar_year_body : function ( define ) { 
+	define_calendar_year_body : function ( define ) {
+
+		var current_year, number_of_counts
+
+		current_year     = define.month[0].year
+		number_of_counts = 30
+
 		return [
 			{
 				"class" : define.class_name.calendar_part,
 				"child" : this.library.morph.index_loop({
-					subject : [2011, 2012, 2013, 2014, 2015, 2016, 2017],
+					subject : this.library.morph.while_greater_than_zero({
+						count   : number_of_counts,
+						into    : [],
+						if_done : function ( result ) {
+							return result.sort()
+						},
+						else_do : function ( loop ) {
+							return loop.into.concat(( 
+								loop.count < number_of_counts/2 ? 
+									current_year + ( number_of_counts/2 - loop.count ): 
+									current_year - ( number_of_counts - loop.count )
+							))
+						}
+					}),
 					else_do : function ( loop ) { 
 						return loop.into.concat({
-							"class"                    : define.class_name.calendar_year_text,
-							"data-gregor-choosen-year" : loop.indexed,
-							"text"                     : loop.indexed
+							"class"                : (
+								current_year === loop.indexed ?
+									define.class_name.calendar_year_text_selected :
+									define.class_name.calendar_year_text
+							),
+							"data-gregor-set-year" : loop.indexed,
+							"text"                 : loop.indexed
 						})
 					}
 				})
 			}
 		]
 	},
+
+	define_calendar_month_body : function ( define ) {
+
+		return [
+			{
+				"class" : define.class_name.calendar_part,
+				"child" : this.library.morph.index_loop({
+					subject : [
+						"January",
+						"February",
+						"March",
+						"April",
+						"May",
+						"June",
+						"July",
+						"August",
+						"September",
+						"October",
+						"November",
+						"December"
+					],
+					else_do : function ( loop ) {
+						return loop.into.concat({
+							"class"                 : (
+							loop.index+1 === define.month[0].month.number ?
+								define.class_name.calendar_month_text_selected :
+								define.class_name.calendar_month_text
+							),
+							"data-gregor-set-month" : loop.index,
+							"text"                  : loop.indexed
+						})
+					}
+				})
+			}
+		]
+	}
 })

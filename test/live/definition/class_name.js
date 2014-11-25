@@ -15,7 +15,10 @@ define({
 		"calendar_day_number_selected" : "calendar_calendar_day_number_selected",
 		"calendar_day_number"          : "calendar_calendar_day_number",
 		"calendar_year_text"           : "calendar_calendar_year_text",
-		"calendar_day_seperator"       : "calendar_calendar_day_seperator"
+		"calendar_year_text_selected"  : "calendar_calendar_year_text_selected",
+		"calendar_day_seperator"       : "calendar_calendar_day_seperator",
+		"calendar_month_text"          : "calendar_calendar_month_text",
+		"calendar_month_text_selected" : "calendar_calendar_month_text_selected"
 	},
 	tree : { 
 		"wrap"                           : "tree_wrap",

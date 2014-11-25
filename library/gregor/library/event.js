@@ -18,6 +18,18 @@ define({
 		var self = this
 		return [
 			{ 
+				called       : "gregor open month choice",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return ( heard.event.target.hasAttribute("data-gregor-choose-month") )
+				}
+			},
+			{ 
 				called       : "gregor choose year",
 				that_happens : [
 					{ 
@@ -26,7 +38,7 @@ define({
 					}
 				],
 				only_if : function ( heard ) {
-					return ( heard.event.target.hasAttribute("data-gregor-choosen-year") )
+					return ( heard.event.target.hasAttribute("data-gregor-set-year") )
 				}
 			},
 			{ 
@@ -38,7 +50,7 @@ define({
 					}
 				],
 				only_if : function ( heard ) {
-					return ( heard.event.target.hasAttribute("data-gregor-set-year") )
+					return ( heard.event.target.hasAttribute("data-gregor-choose-year") )
 				}
 			},
 			{ 

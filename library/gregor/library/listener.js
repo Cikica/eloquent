@@ -14,9 +14,24 @@ define({
 		var self = this
 		return [
 			{ 
-				for       : "gregor choose year",
+				for       : "gregor open month choice",
 				that_does : function ( heard ) {
-					console.log( "choose year yo" )
+
+					var option_state, calendar_body, calendar_body_parent
+
+					option_state          = heard.state
+					calendar_body         = option_state.calendar || option_state.body.get("gregor calendar")
+					calendar_body_parent  = calendar_body.body.parentElement
+					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
+						class_name : define.with.class_name,
+						with       : {},
+						type       : "month",
+						month      : option_state.value.get_month_map(),
+						day        : option_state.value
+					}))
+					calendar_body_parent.removeChild( calendar_body.body )
+					option_state.calendar.append( calendar_body_parent )
+
 					return heard
 				}
 			},
@@ -24,22 +39,50 @@ define({
 				for       : "gregor open year choice",
 				that_does : function ( heard ) {
 
-					var option_state, calendar_body
+					var option_state, calendar_body, calendar_body_parent
 
-					option_state  = heard.state
-					calendar_body = option_state.calendar || option_state.body.get("gregor calendar")
-
+					option_state         = heard.state
+					calendar_body        = option_state.calendar || option_state.body.get("gregor calendar")
+					calendar_body_parent = calendar_body.body.parentElement
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
 						with       : {},
-						month      : new_month.get_month_map(),
-						day        : new_month
+						type       : "year",
+						month      : option_state.value.get_month_map(),
+						day        : option_state.value
 					}))
+					calendar_body_parent.removeChild( calendar_body.body )
+					option_state.calendar.append( calendar_body_parent )
 
-					// calendar_content.body.parentElement.removeChild(
-					// 	calendar_content.body
-					//)
+					return heard
+				}
+			},
+			{ 
+				for       : "gregor choose year",
+				that_does : function ( heard ) {
+					
+					var option_state, calendar_body, new_year, calendar_body_parent
 
+					option_state         = heard.state
+					calendar_body        = option_state.calendar || option_state.body.get("gregor calendar")
+					calendar_body_parent = calendar_body.body.parentElement
+					new_year             = self.library.calendar_logic.get_day({
+						year  : heard.event.target.getAttribute("data-gregor-set-year"),
+						month : option_state.value.date.month.number,
+						day   : option_state.value.date.day.number
+					})
+					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
+						class_name : define.with.class_name,
+						with       : {},
+						type       : "day",
+						month      : new_year.get_month_map(),
+						day        : new_year
+					}))
+					option_state.value                       = new_year
+					option_state.selected                    = false
+					calendar_body_parent.removeChild( calendar_body.body )
+					option_state.calendar.append( calendar_body_parent )
+					
 					return heard
 				}
 			},
@@ -61,6 +104,7 @@ define({
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
 						with       : {},
+						type       : "day",
 						month      : new_month.get_month_map(),
 						day        : new_month
 					}))
