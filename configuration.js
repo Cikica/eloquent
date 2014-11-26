@@ -25,5 +25,6 @@ define({
 		"library/dropdown",
 		"library/keyswitch",
 		"library/gregor",
+		"library/button",
 	]
 })
