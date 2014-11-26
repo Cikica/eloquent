@@ -93,30 +93,6 @@ body {
 .input_text_invalid {
   font-style: italic; }
 
-.input_suggest_container {
-  width: 300px;
-  float: left;
-  clear: both; }
-
-.input_suggest {
-  width: 100%;
-  float: left;
-  background-color: #444;
-  color: #fff;
-  padding: 10px;
-  cursor: pointer; }
-  .input_suggest:hover {
-    background-color: #333; }
-
-.input_suggest_text, .input_suggest_text_match {
-  display: inline-block;
-  float: left;
-  cursor: pointer; }
-
-.input_suggest_text_match {
-  font-weight: bold;
-  color: #5CB6FA; }
-
 .dropdown_main {
   width: 300px;
   float: left;

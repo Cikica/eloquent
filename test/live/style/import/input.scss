@@ -41,3 +41,33 @@
 	@extend .input_text_base;
 	font-style : italic;
 }
+
+.input_suggest_container { 
+	width : $unit*30;
+	float : left;
+	clear: both;
+}
+
+.input_suggest { 
+	width            : 100%;
+	float            : left;
+	background-color : $medium_ink;
+	color            : $light;
+	padding          : $unit;
+	cursor           : pointer;
+	&:hover { 
+		background-color: $ink;
+	}
+}
+
+.input_suggest_text { 
+	display : inline-block;
+	float   : left;
+	cursor  : pointer;
+}
+
+.input_suggest_text_match { 
+	@extend .input_suggest_text;
+	font-weight : bold;
+	color       : $blue;
+}

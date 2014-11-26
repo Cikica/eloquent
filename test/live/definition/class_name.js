@@ -80,10 +80,14 @@ define({
 		"item_list"      : "list_item_list",
 	},
 	input : {
-		"wrap"         : "wrap_input",
-		"text_valid"   : "input_text_valid",
-		"text_invalid" : "input_text_invalid",
-		"small"        : "input_small",
-		"large"        : "input_large"
+		"wrap"               : "wrap_input",
+		"text_valid"         : "input_text_valid",
+		"text_invalid"       : "input_text_invalid",
+		"small"              : "input_small",
+		"large"              : "input_large",
+		"suggest_container"  : "input_suggest_container",
+		"suggest"            : "input_suggest",
+		"suggest_text"       : "input_suggest_text",
+		"suggest_text_match" : "input_suggest_text_match",
 	}
 })

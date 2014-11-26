@@ -6,6 +6,68 @@ define({
 			with : {
 				content : [
 					{
+						text : "Auto Complete Input",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
+			type : "input",
+			name : "auto complete input",
+			with : { 
+				size        : "small",
+				placeholder : "Enter fruit name here",
+				suggest     : {
+					list : [
+						"Banana",
+						"Kiwi",
+						"Apple",
+						"Melon",
+						"Water Melon",
+						"Peach",
+						"Appricot",
+						"Pear",
+						"Water Fire"
+					]
+				}
+			},
+		},
+			{
+			type : "text",
+			with : {
+				content : [
+					{
+						text : "Large Input With Verification",
+						type : "title",
+					},
+				]
+			},
+		},
+		{
+			type : "input",
+			name : "input test",
+			with : { 
+				size        : "large",
+				value       : "some",
+				verify      : {
+					when : function ( value ) {
+						return ( value.length > 5 )
+					},
+					with : function ( value ) {
+						return { 
+							is_valid : false,
+							text     : "Snot good yal"
+						}
+					},
+				},
+			},
+		},
+		{
+			type : "text",
+			with : {
+				content : [
+					{
 						text : "Calendar",
 						type : "title",
 					},
@@ -218,36 +280,6 @@ define({
 						return { 
 							is_valid : true,
 							text     : "sall good"
-						}
-					},
-				},
-			},
-		},
-		{
-			type : "text",
-			with : {
-				content : [
-					{
-						text : "Large Input With Verification",
-						type : "title",
-					},
-				]
-			},
-		},
-		{
-			type : "input",
-			name : "input test",
-			with : { 
-				size        : "large",
-				value       : "some",
-				verify      : {
-					when : function ( value ) {
-						return ( value.length > 5 )
-					},
-					with : function ( value ) {
-						return { 
-							is_valid : false,
-							text     : "Snot good yal"
 						}
 					},
 				},
