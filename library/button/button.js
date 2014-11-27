@@ -30,14 +30,21 @@ define({
 			})
 		)
 		return this.define_interface({
-			body : button_body
+			body         : button_body,
+			event_master : event_circle 
 		})
 	},
 
 	define_interface : function ( define ) { 
 		return { 
-			body   : define.body.body,
-			append : define.body.append
+			body      : define.body.body,
+			append    : define.body.append,
+			get_state : function () { 
+				return define.event_master.get_state()
+			},
+			set_state : function ( state ) { 
+				define.event_master.set_state( state )
+			}
 		}
 	},
 
@@ -69,7 +76,7 @@ define({
 			{ 
 				for       : "click",
 				that_does : function ( heard ) {
-					console.log( "click me baby" )
+					console.log( heard.state.remake.get_state() )
 					return heard
 				}
 			}
@@ -77,7 +84,6 @@ define({
 	},
 
 	define_body : function ( define ) {
-		console.log( define )
 		return {
 			"class" : define.class_name.wrap,
 			"child" : [

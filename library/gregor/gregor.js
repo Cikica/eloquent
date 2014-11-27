@@ -40,13 +40,26 @@ define({
 
 		return this.define_interface({
 			body              : gregor_body,
-			event_master      : event_circle
+			event_master      : event_circle,
+			with              : define.with
 		})
 	},
 
 	define_interface : function ( define ) {
 		return { 
-			body   : define.body.body,
+			body      : define.body.body,
+			get_state : function () {
+				
+				var state
+				state = define.event_master.get_state()
+
+				if ( define.with.get ) { 
+					return define.with.get.with.call({}, state )
+				}
+
+				return state
+
+			},
 			append : function ( to_what ) { 
 				define.body.append( to_what ) 
 			}

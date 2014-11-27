@@ -8,9 +8,9 @@ define({
 
 	define_state : function ( define ) { 
 		return {
-			body  : define.body.get("gregor"),
-			map   : {},
-			value : this.library.calendar_logic.get_day()
+			body        : define.body.get("gregor"),
+			map         : {},
+			date_object : this.library.calendar_logic.get_day()
 		}
 	},
 	

@@ -103,14 +103,23 @@
 				)
 			}
 
-			// there might be a better way to add global acess
 			this.library.morph.index_loop({
 				subject : eloquent_parts,
 				else_do : function ( loop ) {
 
-					if ( loop.indexed.package_part.set_state ) {
+					if ( 
+						loop.indexed.package_part.set_state  &&
+						loop.indexed.package_part.get_state
+					) {
 						var state    = loop.indexed.package_part.get_state()
-						state.remake = eloquent_interface
+						state.remake = {
+							get_state : function () { 
+								return eloquent_interface.get_state()
+							},
+							reset : function () { 
+								return eloquent_interface.reset()
+							}
+						}
 						loop.indexed.package_part.set_state( state )
 					}
 					return loop.into
