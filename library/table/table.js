@@ -4,20 +4,37 @@ define({
 		allow   : "*",
 		require : [
 			"morph",
-			"transistor"
+			"transistor",
+			"transit",
+			"event_master"
 		]
 	},
 
 	make : function ( define ) {
-		
-		var tabular_body, event_circle
 
-		tabular_body = this.library.transistor.make(
+		var table_body, event_circle
+
+		table_body = this.library.transistor.make(
 			this.define_body( define )
 		)
-		// console.log( tabular_body )
+
+		event_circle = this.library.event_master.make({
+			state  : this.define_state( define ),
+			events : this.define_event({
+				body : table_body,
+				with : define
+			})
+		})
+		event_circle.add_listener(
+			this.define_listener({
+				body       : table_body,
+				class_name : define.class_name,
+				with       : define.with
+			})
+		)
+
 		return this.define_interface({
-			body         : tabular_body,
+			body         : table_body,
 			event_master : event_circle
 		})
 	},
@@ -26,14 +43,82 @@ define({
 		return {
 			body      : define.body.body,
 			append    : define.body.append,
+			set_value : function ( set ) {
+				define.event_master.stage_event({
+					called : "set table",
+					as     : function ( state ) {
+						return { 
+							state : {
+								data : set.data
+							},
+							event : define.body.body
+						}
+					}
+				})
+			}
 		}
 	},
 
+	define_state : function ( define ) {
+		return {
+			table : define.with.data || {}
+		}
+	},
+
+	define_event : function ( define ) {
+		return [
+			{ 
+				called : "set table"
+			}
+		]
+	},
+
+	define_listener : function ( define ) {
+		var self = this
+		return [
+			{
+				for       : "set table",
+				that_does : function ( heard ) {
+					
+					var table_state, table_body, table_content
+
+					table_body    = define.body.body
+					table_state   = heard.state
+					table_content = this.library.transistor.make(
+						self.define_row_and_column({
+							class_name : define.class_name,
+							date       : heard.state.date
+						})
+					)
+
+					console.log( table_body )
+					return heard
+				}
+			}
+		]
+	},
+
 	define_body : function ( define ) {
-		var self
-		self = this
+
+		var self, content
+		
+		self    = this
+		content = []
+
+		if ( define.with.data ) { 
+			content = []
+		}
+
 		return { 
 			"class" : define.class_name.wrap,
+			"child" : []
+		}
+	},
+
+	define_row_and_column : function ( define ) {
+
+		return {
+			"class" : define.class_name.content,
 			"child" : [
 				{ 
 					"class" : define.class_name.head_wrap,

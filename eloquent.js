@@ -113,6 +113,7 @@
 					) {
 						var state    = loop.indexed.package_part.get_state()
 						state.remake = {
+							part      : eloquent_interface.part,
 							get_state : function () { 
 								return eloquent_interface.get_state()
 							},

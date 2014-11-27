@@ -26,7 +26,7 @@ define({
 		event_circle.add_listener(
 			this.define_listener({
 				body : button_body,
-				with : define
+				with : define.with
 			})
 		)
 		return this.define_interface({
@@ -76,7 +76,11 @@ define({
 			{ 
 				for       : "click",
 				that_does : function ( heard ) {
-					console.log( heard.state.remake.get_state() )
+
+					if ( define.with.click && define.with.click.method ) { 
+						return define.with.click.method.call({}, heard )
+					}
+
 					return heard
 				}
 			}
