@@ -61,12 +61,6 @@ define({
 	},
 
 	define_state : function ( define ) {
-		var data
-		data = {}
-		if ( define.with.data ) { 
-			data = define.with.data
-			// data.
-		}
 		return {
 			data                 : define.with.data || {},
 			new_table_definition : {}
@@ -134,7 +128,7 @@ define({
 							}
 						})
 					)
-					table_body.removeChild( table_body.firstChild )
+					table_body.removeChild( table_body.children[1] )
 					table_content.append( table_body )
 
 					return heard
@@ -148,10 +142,12 @@ define({
 		var self, content
 		
 		self    = this
-		content = []
-		console.log( define )
+		content = [
+			this.define_control_body( define )
+		]
+
 		if ( define.with.data ) { 
-			content = [
+			content = content.concat([
 				this.define_row_and_column({
 					class_name : define.class_name,
 					with       : {
@@ -159,13 +155,34 @@ define({
 						format : define.with.format
 					}
 				})
-			]
+			])
 		}
 
 		return {
 			"width" : ( define.with.format.field.width * define.with.data.view.main.column.length ) + "px",
 			"class" : define.class_name.wrap,
 			"child" : content
+		}
+	},
+
+	define_control_body : function ( define ) {
+		return {
+			"class" : "",
+			"child" : [ 
+				{ 
+					"class" : "",
+					"text"  : "Back",
+					"mark_as" : "",
+				},
+				{ 
+					"class" : "",
+					"text"  : "Forward"
+				},
+				{ 
+					"class" : "",
+					"text"  : "Some text here"
+				}
+			]
 		}
 	},
 
