@@ -27,9 +27,10 @@ define({
 		})
 		event_circle.add_listener(
 			this.define_listener({
-				body       : table_body,
-				class_name : define.class_name,
-				with       : define.with
+				body         : table_body,
+				class_name   : define.class_name,
+				with         : define.with,
+				event_circle : event_circle
 			})
 		)
 
@@ -45,7 +46,7 @@ define({
 			append    : define.body.append,
 			set_value : function ( set ) {
 				define.event_master.stage_event({
-					called : "set table",
+					called : "change table",
 					as     : function ( state ) {
 						return { 
 							state : {
@@ -60,38 +61,82 @@ define({
 	},
 
 	define_state : function ( define ) {
+		var data
+		data = {}
+		if ( define.with.data ) { 
+			data = define.with.data
+			// data.
+		}
 		return {
-			table : define.with.data || {}
+			data                 : define.with.data || {},
+			new_table_definition : {}
 		}
 	},
 
 	define_event : function ( define ) {
 		return [
 			{ 
-				called : "set table"
-			}
+				called : "change table"
+			},
+			{ 
+				called : "change view",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return heard.event.target.hasAttribute("data-table-choose-view")
+				}
+			},
 		]
 	},
 
 	define_listener : function ( define ) {
+
 		var self = this
 		return [
-			{
-				for       : "set table",
+			{ 
+				for       : "change view",
 				that_does : function ( heard ) {
 					
-					var table_state, table_body, table_content
+					var view_name
+					view_name = heard.event.target.getAttribute("data-table-choose-view")
 
-					table_body    = define.body.body
-					table_state   = heard.state
-					table_content = this.library.transistor.make(
+					return define.event_circle.stage_event({
+						called : "change table",
+						as     : function ( state ) {
+							state.new_table_definition = heard.state.data.view[view_name]
+							return { 
+								state : state,
+								event : { 
+									target : define.body.body
+								}
+							}
+						}
+					})
+				}
+			},
+			{
+				for       : "change table",
+				that_does : function ( heard ) {
+
+					var table_body, table_content
+
+					table_body    = heard.event.target
+					table_content = self.library.transistor.make(
 						self.define_row_and_column({
 							class_name : define.class_name,
-							date       : heard.state.date
+							with       : {
+								data   : heard.state.new_table_definition,
+								format : define.with.format
+							}
 						})
 					)
+					table_body.removeChild( table_body.firstChild )
+					table_content.append( table_body )
 
-					console.log( table_body )
 					return heard
 				}
 			}
@@ -104,70 +149,172 @@ define({
 		
 		self    = this
 		content = []
-
+		console.log( define )
 		if ( define.with.data ) { 
-			content = []
+			content = [
+				this.define_row_and_column({
+					class_name : define.class_name,
+					with       : {
+						data   : define.with.data.view.main,
+						format : define.with.format
+					}
+				})
+			]
 		}
 
-		return { 
+		return {
+			"width" : ( define.with.format.field.width * define.with.data.view.main.column.length ) + "px",
 			"class" : define.class_name.wrap,
-			"child" : []
+			"child" : content
 		}
 	},
 
 	define_row_and_column : function ( define ) {
 
+		var self = this
 		return {
 			"class" : define.class_name.content,
 			"child" : [
-				{ 
-					"class" : define.class_name.head_wrap,
-					"child" : this.library.morph.index_loop({
-						subject : define.with.column,
-						else_do : function ( loop ) {
-							return loop.into.concat({ 
-								"class" : define.class_name.head_name,
-								"text"  : loop.indexed
-							})
-						}
-					})
-				},
-				{
-					"class" : define.class_name.body_wrap,
-					"child" : this.library.morph.index_loop({
-						subject : define.with.row,
-						else_do : function ( loop ) {
-							return loop.into.concat(self.define_row({
-								class_name : define.class_name,
-								column     : define.with.column,
-								row        : loop.indexed
-							}))
-						}
-					})
-				}
+				this.define_column_name_row({
+					class_name : define.class_name,
+					with       : { 
+						column : define.with.data.column,
+						format : define.with.format
+					}
+				}),
+				this.define_row({
+					class_name : define.class_name,
+					with       : {
+						row    : define.with.data.row,
+						format : define.with.format
+					}
+				})
 			]
 		}
 	},
 
+	define_column_name_row : function ( define ) {
+		var self = this
+		return {
+			"class" : define.class_name.head_wrap,
+			"child" : this.library.morph.index_loop({
+				subject : this.format_column_field_definition( define.with.column ),
+				else_do : function ( loop ) {
+					return loop.into.concat(
+						self.define_column_name_field({
+							class_name : define.class_name,
+							with       : loop.indexed,
+							format     : define.with.format
+						})
+					)
+				}
+			})
+		}
+	},
+
+	define_column_name_field : function ( define ) {
+		return {
+			"class" : define.class_name.head_name,
+			"width" : define.format.field.width + "px",
+			"text"  : define.with.text
+		}
+	},
+
+	format_column_field_definition : function ( definition ) { 
+		return this.library.morph.index_loop({
+			subject : definition,
+			else_do : function ( loop ) {
+
+				var field_definition
+
+				if ( loop.indexed.constructor === String ) { 
+					field_definition = { 
+						"text" : loop.indexed
+					}					
+				}
+
+				if ( loop.indexed.constructor === Object ) {
+					field_definition = loop.indexed
+				}
+
+				return loop.into.concat( field_definition )
+			}
+		})
+	},
+
+	format_row_field_definition : function ( definition ) {
+		return this.library.morph.object_loop({
+			subject : definition,
+			else_do : function ( loop ) {
+
+				var field_definition
+
+				if ( loop.value.constructor === String ) { 
+					field_definition = { 
+						"text" : loop.value
+					}					
+				}
+
+				if ( loop.value.constructor === Object ) {
+					field_definition = loop.value
+				}
+
+				return {
+					key   : loop.key,
+					value : field_definition,
+				}
+			}
+		})
+	},
+
+	define_row_field : function ( define ) { 
+		var definition
+
+		definition = {
+			"class" : define.class_name.row_name,
+			"text"  : define.with.text,
+			"width" : define.format.field.width +"px"
+		}
+
+		if ( define.with.view ) { 
+			definition["data-table-choose-view"] = define.with.view
+		}
+
+		return definition
+	},
+
 	define_row : function ( define ) {
 		var self = this
-		return { 
-			"class" : define.class_name.row_wrap,
+		return {
+			"class" : define.class_name.body_wrap,
 			"child" : this.library.morph.index_loop({
 				subject : this.library.morph.index_loop({
-					subject : define.column,
-					if_done : function ( loop ) {
-						return loop.into
-					},
-					else_do : function ( loop ) {
-						var title_name_as_option = self.convert_string_to_option_name( loop.indexed )
-						return loop.into.concat(define.row[title_name_as_option])
+					subject : define.with.row,
+					else_do : function ( format_loop ) { 
+						return format_loop.into.concat(
+							self.format_row_field_definition( format_loop.indexed )
+						)
 					}
 				}),
-				else_do : function ( loop ) {
-					return loop.into.concat({
-						"class" : define.class_name.row_name,
-						"text"  : loop.indexed
+				else_do : function ( content_loop ) {
+
+					return content_loop.into.concat({
+						"class" : define.class_name.row_wrap,
+						"child" : self.library.morph.object_loop({
+							"subject" : content_loop.indexed,
+							"into?"   : [],
+							"else_do" : function ( loop ) {
+								return { 
+									into : loop.into.concat(
+										self.define_row_field({
+											class_name : define.class_name,
+											format     : define.with.format,
+											with       : loop.value
+										})
+									)
+								}
+							} 
+						})
 					})
 				}
 			})
