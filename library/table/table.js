@@ -81,8 +81,10 @@ define({
 				new_definition : {},
 				current_name   : "main",
 				history        : {
-					position : false,
-					record   : [],
+					position : 0,
+					record   : [
+						"main"
+					],
 				},
 			}
 		}
@@ -101,8 +103,11 @@ define({
 						is : [ "click" ]
 					}
 				],
-				only_if : function ( heard ) { 
-					return heard.event.target.getAttribute("data-button") === "back"
+				only_if : function ( heard ) {
+					return ( 
+						heard.event.target.getAttribute("data-button") === "back"	&&
+						heard.state.view.history.position > 0                
+					)
 				}
 			},
 			{ 
@@ -142,32 +147,30 @@ define({
 			{ 
 				for       : "change view back",
 				that_does : function ( heard ) {
+					return define.event_circle.stage_event({
+						called : "change view",
+						as     : function ( state ) {
 
-					if ( heard.state.view.history.record.length > 0 ) {
-						return define.event_circle.stage_event({
-							called : "change view",
-							as     : function ( state ) {
-								return { 
-									state : state,
-									event : { 
-										target : {
-											getAttribute : function () { 
-												return heard.state.view.history.record[heard.state.view.history.record.length-2]
-											}
+							state.view.history.position = state.view.history.position-1
+							return { 
+								state : state,
+								event : { 
+									target : {
+										getAttribute : function () { 
+											console.log( state.view.history.position )
+											return state.view.history.record[state.view.history.position]
 										}
 									}
 								}
 							}
-						})
-					} else {
-						return heard
-					}
+						}
+					})
 				}
 			},
 			{ 
 				for       : "change view",
 				that_does : function ( heard ) {
-					console.log("change baby change")
+					
 					var view_name, view_definition, control_text_body
 
 					view_name         = heard.event.target.getAttribute("data-table-choose-view")
@@ -175,7 +178,7 @@ define({
 					control_text_body = define.body.get("control text").body
 					
 
-					if ( view_definition.constructor === Object ) {
+					if ( view_definition.url ) {
 
 						var view_definition_method
 
@@ -192,12 +195,13 @@ define({
 								define.event_circle.stage_event({
 									called : "change table",
 									as     : function ( state ) {
-										control_text_body.textContent = "Viewing "+ view_name
-										state.view.new_definition     = new_table_definition
-										state.view.current_name       = view_name
-										state.data.view[view_name]    = new_table_definition
-										state.view.loading_view       = false
-										state.view.history.record     = state.view.history.record.concat(
+
+										state.view.loading_view     = false
+										state.data.view[view_name]  = new_table_definition
+										state.view.new_definition   = new_table_definition
+										state.view.current_name     = view_name
+										state.view.history.position = heard.state.view.history.position + 1
+										state.view.history.record   = state.view.history.record.concat(
 											view_name
 										)
 
@@ -214,27 +218,32 @@ define({
 						self.library.transit.to( view_definition )
 					}
 
+					if ( view_definition.column ) {
+						console.log( view_definition )
+						return define.event_circle.stage_event({
+							called : "change table",
+							as     : function ( state ) {
+								// this here is a duplicate of the transit version, shold
+								// find a way to remove the repetition and instead use one method 
+								state.view.new_definition   = view_definition
+								state.view.current_name     = view_name
+								state.view.history.position = heard.state.view.history.position + 1
+								state.view.history.record   = state.view.history.record.concat(
+									view_name
+								)
+								return { 
+									state : state,
+									event : { 
+										target : define.body.body
+									}
+								}
+							}
+						})	
+					}
+
 					// if ( view_definition.constructor === Function ) {}
-
+					
 					return heard
-					// return define.event_circle.stage_event({
-					// 	called : "change table",
-					// 	as     : function ( state ) {
-
-					// 		state.view.new_definition = heard.state.data.view[view_name]
-					// 		state.view.current_name   = view_name
-					// 		state.view.history.record = state.view.history.record.concat(
-					// 			view_name
-					// 		)
-
-					// 		return { 
-					// 			state : state,
-					// 			event : { 
-					// 				target : define.body.body
-					// 			}
-					// 		}
-					// 	}
-					// })
 				}
 			},
 			{
