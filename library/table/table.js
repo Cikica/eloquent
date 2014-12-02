@@ -41,6 +41,7 @@ define({
 	},
 
 	define_interface : function ( define ) {
+		var self = this
 		return {
 			body      : define.body.body,
 			append    : define.body.append,
@@ -48,11 +49,23 @@ define({
 				define.event_master.stage_event({
 					called : "change table",
 					as     : function ( state ) {
+						var new_state
+						new_state = self.define_state({
+							class_name : define.class_name,
+							with       : {
+								data       : {
+									view : {
+										"main" : set.data
+									}
+								}
+							}
+						})
+						new_state.view.new_definition = set.data
 						return { 
-							state : {
-								data : set.data
-							},
-							event : define.body.body
+							state : new_state,
+							event : {
+								target : define.body.body
+							}
 						}
 					}
 				})
@@ -62,8 +75,16 @@ define({
 
 	define_state : function ( define ) {
 		return {
-			data                 : define.with.data || {},
-			new_table_definition : {}
+			data : define.with.data || {},
+			view : {
+				loading_view   : false,
+				new_definition : {},
+				current_name   : "main",
+				history        : {
+					position : false,
+					record   : [],
+				},
+			}
 		}
 	},
 
@@ -71,6 +92,30 @@ define({
 		return [
 			{ 
 				called : "change table"
+			},
+			{ 
+				called : "change view back",
+				that_happens : [
+					{
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return heard.event.target.getAttribute("data-button") === "back"
+				}
+			},
+			{ 
+				called : "change view forward",
+				that_happens : [
+					{
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return heard.event.target.getAttribute("data-button") === "forward"
+				}
 			},
 			{ 
 				called : "change view",
@@ -81,7 +126,10 @@ define({
 					}
 				],
 				only_if : function ( heard ) { 
-					return heard.event.target.hasAttribute("data-table-choose-view")
+					return ( 
+						heard.event.target.hasAttribute("data-table-choose-view") &&
+						heard.state.view.loading_view === false
+					)
 				}
 			},
 		]
@@ -92,24 +140,101 @@ define({
 		var self = this
 		return [
 			{ 
-				for       : "change view",
+				for       : "change view back",
 				that_does : function ( heard ) {
-					
-					var view_name
-					view_name = heard.event.target.getAttribute("data-table-choose-view")
 
-					return define.event_circle.stage_event({
-						called : "change table",
-						as     : function ( state ) {
-							state.new_table_definition = heard.state.data.view[view_name]
-							return { 
-								state : state,
-								event : { 
-									target : define.body.body
+					if ( heard.state.view.history.record.length > 0 ) {
+						return define.event_circle.stage_event({
+							called : "change view",
+							as     : function ( state ) {
+								return { 
+									state : state,
+									event : { 
+										target : {
+											getAttribute : function () { 
+												return heard.state.view.history.record[heard.state.view.history.record.length-2]
+											}
+										}
+									}
 								}
 							}
+						})
+					} else {
+						return heard
+					}
+				}
+			},
+			{ 
+				for       : "change view",
+				that_does : function ( heard ) {
+					console.log("change baby change")
+					var view_name, view_definition, control_text_body
+
+					view_name         = heard.event.target.getAttribute("data-table-choose-view")
+					view_definition   = heard.state.data.view[view_name]
+					control_text_body = define.body.get("control text").body
+					
+
+					if ( view_definition.constructor === Object ) {
+
+						var view_definition_method
+
+						view_definition_method        = view_definition.when.finished
+						control_text_body.textContent = "Loading..."
+						heard.state.view.loading_view = true
+
+						view_definition.when = {
+							finished : function ( given ) {
+
+								var new_table_definition
+								new_table_definition = view_definition_method.call({}, given )
+
+								define.event_circle.stage_event({
+									called : "change table",
+									as     : function ( state ) {
+										control_text_body.textContent = "Viewing "+ view_name
+										state.view.new_definition     = new_table_definition
+										state.view.current_name       = view_name
+										state.data.view[view_name]    = new_table_definition
+										state.view.loading_view       = false
+										state.view.history.record     = state.view.history.record.concat(
+											view_name
+										)
+
+										return { 
+											state : state,
+											event : { 
+												target : define.body.body
+											}
+										}
+									}
+								})
+							}
 						}
-					})
+						self.library.transit.to( view_definition )
+					}
+
+					// if ( view_definition.constructor === Function ) {}
+
+					return heard
+					// return define.event_circle.stage_event({
+					// 	called : "change table",
+					// 	as     : function ( state ) {
+
+					// 		state.view.new_definition = heard.state.data.view[view_name]
+					// 		state.view.current_name   = view_name
+					// 		state.view.history.record = state.view.history.record.concat(
+					// 			view_name
+					// 		)
+
+					// 		return { 
+					// 			state : state,
+					// 			event : { 
+					// 				target : define.body.body
+					// 			}
+					// 		}
+					// 	}
+					// })
 				}
 			},
 			{
@@ -123,11 +248,12 @@ define({
 						self.define_row_and_column({
 							class_name : define.class_name,
 							with       : {
-								data   : heard.state.new_table_definition,
+								data   : heard.state.view.new_definition,
 								format : define.with.format
 							}
 						})
 					)
+					table_body.style.width = ( heard.state.data.view[heard.state.view.current_name].column.length * define.with.format.field.width ) +"px"
 					table_body.removeChild( table_body.children[1] )
 					table_content.append( table_body )
 
@@ -167,20 +293,24 @@ define({
 
 	define_control_body : function ( define ) {
 		return {
-			"class" : "",
+			"class" : define.class_name.control,
 			"child" : [ 
 				{ 
-					"class" : "",
-					"text"  : "Back",
-					"mark_as" : "",
+					"class"       : define.class_name.control_button,
+					"text"        : "Back",
+					"data-button" : "back",
+					"mark_as"     : "back button",
 				},
 				{ 
-					"class" : "",
-					"text"  : "Forward"
+					"class"       : define.class_name.control_button,
+					"text"        : "Forward",
+					"data-button" : "forward",
+					"mark_as"     : "forward button",
 				},
 				{ 
-					"class" : "",
-					"text"  : "Some text here"
+					"class"   : define.class_name.control_text,
+					"mark_as" : "control text",
+					"text"    : "Some text here",
 				}
 			]
 		}
