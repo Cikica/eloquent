@@ -106,7 +106,7 @@ define({
 				only_if : function ( heard ) {
 					return ( 
 						heard.event.target.getAttribute("data-button") === "back"	&&
-						heard.state.view.history.position > 0                
+						heard.state.view.history.position > 0
 					)
 				}
 			},
@@ -147,24 +147,26 @@ define({
 			{ 
 				for       : "change view back",
 				that_does : function ( heard ) {
-					return define.event_circle.stage_event({
-						called : "change view",
-						as     : function ( state ) {
+					return heard
+					// return define.event_circle.stage_event({
+					// 	called : "change view",
+					// 	as     : function ( state ) {
 
-							state.view.history.position = state.view.history.position-1
-							return { 
-								state : state,
-								event : { 
-									target : {
-										getAttribute : function () { 
-											console.log( state.view.history.position )
-											return state.view.history.record[state.view.history.position]
-										}
-									}
-								}
-							}
-						}
-					})
+					// 		state.view.history.position = state.view.history.position-1
+					// 		return { 
+					// 			state : state,
+					// 			event : { 
+					// 				target : {
+					// 					getAttribute : function () {
+					// 						console.log( state.view.history.position )
+					// 						console.log( state.view.history.record )
+					// 						return state.view.history.record[state.view.history.position]
+					// 					}
+					// 				}
+					// 			}
+					// 		}
+					// 	}
+					// })
 				}
 			},
 			{ 
@@ -200,10 +202,13 @@ define({
 										state.data.view[view_name]  = new_table_definition
 										state.view.new_definition   = new_table_definition
 										state.view.current_name     = view_name
-										state.view.history.position = heard.state.view.history.position + 1
-										state.view.history.record   = state.view.history.record.concat(
-											view_name
-										)
+
+										if ( state.view.history.position === state.view.history.record.length-1 ) {
+											state.view.history.position = heard.state.view.history.position + 1
+											state.view.history.record   = state.view.history.record.concat(
+												view_name
+											)	
+										}
 
 										return { 
 											state : state,
@@ -219,18 +224,21 @@ define({
 					}
 
 					if ( view_definition.column ) {
-						console.log( view_definition )
+
 						return define.event_circle.stage_event({
 							called : "change table",
 							as     : function ( state ) {
-								// this here is a duplicate of the transit version, shold
-								// find a way to remove the repetition and instead use one method 
+
 								state.view.new_definition   = view_definition
 								state.view.current_name     = view_name
-								state.view.history.position = heard.state.view.history.position + 1
-								state.view.history.record   = state.view.history.record.concat(
-									view_name
-								)
+
+								if ( state.view.history.position === state.view.history.record.length-1 ) {
+									state.view.history.position = heard.state.view.history.position + 1
+									state.view.history.record   = state.view.history.record.concat(
+										view_name
+									)	
+								}
+								
 								return { 
 									state : state,
 									event : { 
