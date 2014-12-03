@@ -3,9 +3,7 @@ define({
 	define : {
 		allow   : "*",
 		require : [
-			"morph",
 			"transistor",
-			"transit",
 			"event_master",
 			"body",
 			"event"
@@ -51,18 +49,15 @@ define({
 				define.event_master.stage_event({
 					called : "change table",
 					as     : function ( state ) {
+
 						var new_state
 						new_state = self.define_state({
 							class_name : define.class_name,
 							with       : {
-								data       : {
-									view : {
-										"main" : set.data
-									}
-								}
+								data       : set.data
 							}
 						})
-						new_state.view.new_definition = set.data
+						new_state.view.new_definition = set.data.view.main
 						return { 
 							state : new_state,
 							event : {
