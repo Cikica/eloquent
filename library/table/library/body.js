@@ -162,7 +162,11 @@ define({
 		var definition
 
 		definition = {
-			"class" : define.class_name.row_name,
+			"class" : (
+				define.with.view ? 
+					define.class_name.usable_row_name	:
+					define.class_name.row_name
+			),
 			"text"  : define.with.text,
 			"width" : define.format.field.width +"px"
 		}

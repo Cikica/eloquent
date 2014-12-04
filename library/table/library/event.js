@@ -180,27 +180,52 @@ define({
 					view_name         = heard.event.target.getAttribute("data-table-choose-view")
 					view_definition   = heard.state.data.view[view_name]
 
+					if ( view_definition.url ) {
+
+						var finish_method
+
+						finish_method        = view_definition.when.finished
+						view_definition.when = { 
+							finished : function ( given ) { 
+
+								var loaded_view_definition
+
+								loaded_view_definition = finish_method.call({}, given )
+
+								define.event_circle.stage_event({
+									called : "change table",
+									as     : function ( state ) {
+										
+										state.data.view[view_name] = loaded_view_definition
+
+										return self.prepare_state_for_table_change({
+											state           : state,
+											view_definition : loaded_view_definition,
+											view_name       : view_name,
+											body            : define.body.body,
+										})
+									}
+								})	
+							}
+						}
+
+						self.library.transit.to( view_definition )
+					}
+
 					if ( view_definition.column ) {
 
 						return define.event_circle.stage_event({
 							called : "change table",
 							as     : function ( state ) {
 
-								state.view.new_definition   = view_definition
-								state.view.current_name     = view_name
-								state.view.history.position = heard.state.view.history.position + 1
-								state.view.history.record   = state.view.history.record.slice( 0, state.view.history.position ).concat( view_name )
-
-								console.log( state.view.history.record )
-
-								return { 
-									state : state,
-									event : { 
-										target : define.body.body
-									}
-								}
+								return self.prepare_state_for_table_change({
+									state           : state,
+									view_definition : view_definition,
+									view_name       : view_name,
+									body            : define.body.body,
+								})
 							}
-						})	
+						})
 					}
 					
 					return heard
@@ -208,4 +233,19 @@ define({
 			},
 		]
 	},
+
+	prepare_state_for_table_change : function ( given ) {
+
+		given.state.view.new_definition   = given.view_definition
+		given.state.view.current_name     = given.view_name
+		given.state.view.history.position = given.state.view.history.position + 1
+		given.state.view.history.record   = given.state.view.history.record.slice( 0, given.state.view.history.position ).concat( given.view_name )
+
+		return { 
+			state : given.state,
+			event : { 
+				target : given.body
+			}
+		}
+	}
 })
