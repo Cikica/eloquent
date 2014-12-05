@@ -26,5 +26,6 @@ define({
 		"library/keyswitch",
 		"library/gregor",
 		"library/button",
+		"library/tab"
 	]
 })

@@ -28,7 +28,8 @@
 				"tree_option",
 				"table",
 				"gregor",
-				"button"
+				"button",
+				"tab",
 			]
 		},
 
@@ -42,6 +43,7 @@
 			"table"  : "table",
 			"date"   : "gregor",
 			"button" : "button",
+			"tab"    : "tab",
 		},
 
 		shared_event : [
