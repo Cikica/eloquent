@@ -140,15 +140,21 @@ define({
 			else_do : function ( loop ) {
 
 				var field_definition
-
-				if ( loop.value.constructor === String || loop.value.constructor === Number ) { 
-					field_definition = { 
-						"text" : loop.value
+				
+				if ( loop.value !== null && loop.value !== undefined ) { 
+					if ( loop.value.constructor === String || loop.value.constructor === Number ) { 
+						field_definition = { 
+							"text" : loop.value
+						}
 					}
-				}
 
-				if ( loop.value.constructor === Object ) {
-					field_definition = loop.value
+					if ( loop.value.constructor === Object ) {
+						field_definition = loop.value
+					}
+				} else { 
+					field_definition = {
+						text : ""
+					}
 				}
 
 				return {

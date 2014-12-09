@@ -334,11 +334,15 @@
   				if ( object.hasOwnProperty( property ) ) {
   					var value
   					value = object[property]
-  					if ( value.constructor === Array ) {
-  						keys = keys.concat([ value ])
-  					} else { 
-  						keys = keys.concat( value )
-  					}
+  					if ( value !== null && value !== undefined ) {
+	  					if ( value.constructor === Array ) {
+	  						keys = keys.concat([ value ])
+	  					} else { 
+	  						keys = keys.concat( value )
+	  					}
+	  				} else { 
+	  					keys = keys.concat( value )
+	  				}
   				}
   			}
 
