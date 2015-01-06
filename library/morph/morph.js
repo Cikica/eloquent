@@ -72,37 +72,6 @@
 			}
 		},
 
-		does_array_contain_this_value : function ( contained ) { 
-			var self = this
-			return this.index_loop_base({
-				subject  : contained.array,
-				into     : false,
-				start_at : 0,
-				if_done  : function ( loop ) { 
-					return loop.into
-				},
-				else_do : function ( loop ) {
-					var does_contained_value_match_indexed_value
-					does_contained_value_match_indexed_value = self.are_these_two_values_the_same({
-						first  : loop.subject[loop.start_at],
-						second : contained.value
-					})
-					console.log( does_contained_value_match_indexed_value )
-					return {
-						subject         : loop.subject,
-						start_at        : (
-							does_contained_value_match_indexed_value ? 
-								loop.subject.length-1 :
-								loop.start_at + 1
-						),
-						into    : does_contained_value_match_indexed_value,
-						if_done : loop.if_done,
-						else_do : loop.else_do
-					}
-				}
-			})
-		},
-
 		surject_array : function ( what ) {
 
 			return this.index_loop_base({
@@ -176,6 +145,38 @@
 					})
 				})
 			}
+		},
+
+
+		does_array_contain_this_value : function ( contained ) { 
+			var self = this
+			return this.index_loop_base({
+				subject  : contained.array,
+				into     : false,
+				start_at : 0,
+				if_done  : function ( loop ) { 
+					return loop.into
+				},
+				else_do : function ( loop ) {
+					var does_contained_value_match_indexed_value
+					does_contained_value_match_indexed_value = self.are_these_two_values_the_same({
+						first  : loop.subject[loop.start_at],
+						second : contained.value
+					})
+					console.log( does_contained_value_match_indexed_value )
+					return {
+						subject         : loop.subject,
+						start_at        : (
+							does_contained_value_match_indexed_value ? 
+								loop.subject.length-1 :
+								loop.start_at + 1
+						),
+						into    : does_contained_value_match_indexed_value,
+						if_done : loop.if_done,
+						else_do : loop.else_do
+					}
+				}
+			})
 		},
 
 		are_these_two_values_the_same : function( value ) {
@@ -340,7 +341,6 @@
 				}
 			})
   		},
-
 
   		get_the_keys_of_an_object : function ( object ) { 
   			var keys
@@ -576,7 +576,6 @@
 					}
 				}
 			})
-
 		},
 
 		convert_node_list_to_array : function ( node_list ) { 

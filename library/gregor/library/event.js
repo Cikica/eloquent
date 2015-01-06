@@ -10,13 +10,38 @@ define({
 		return {
 			body        : define.body.get("gregor"),
 			map         : {},
-			date_object : this.library.calendar_logic.get_day()
+			date_object : this.library.calendar_logic.get_day(),
+			with        : define.with.with
 		}
 	},
 	
 	make : function ( define ) { 
 		var self = this
 		return [
+			{ 
+				called       : "gregor open year select dropdown",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) {
+					return heard.event.target.hasAttribute("data-gregor-open-year-dropdown")
+				}
+			},
+			{ 
+				called       : "gregor open month select dropdown",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) {
+					return heard.event.target.hasAttribute("data-gregor-open-month-dropdown")
+				}
+			},
 			{ 
 				called       : "gregor open month choice",
 				that_happens : [

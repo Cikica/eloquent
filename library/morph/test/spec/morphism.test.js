@@ -1,7 +1,165 @@
 
 	var module = window.morph
 
-	describe("get object from arrays", function ( ) {
+	describe("inject object", function() {
+
+		it("injects an object into an object", function() {
+			expect( module.inject_object({
+				object : { 
+					s : "some",
+					d : "some other"
+				},
+				with : { 
+					c : "another some"
+				}
+			})).toEqual({
+				s : "some",
+				d : "some other",
+				c : "another some"
+			})
+		})
+
+		it("injects an array into an object", function() {
+			expect( module.inject_object({
+				object : { 
+					a : "some",
+					b : "some other"
+				},
+				with : ["a", "b", "c"]
+			})).toEqual({
+				"a" : "some",
+				"b" : "some other",
+				"0" : "a",
+				"1" : "b",
+				"2" : "c"
+			})
+		})
+	})
+
+	describe("inject array", function() {
+		var definition, input
+		definition = { 
+			array : [],
+			with  : [] || {} || function () {}
+		}
+
+		it("injects array into an array", function() {
+			expect( module.inject_array({
+				array : [1,2,3,4],
+				with  : [5,6,7,8]
+			})).toEqual( [1,2,3,4,5,6,7,8] )
+		})
+
+		it("injects an the values of an object into an array", function() {
+			expect( module.inject_array({
+				array : [1,2,3,4],
+				with  : { s : "a", ss : "b", sss : "c" },
+			})).toEqual( [1,2,3,4, "a", "b", "c" ] )
+		})
+
+		it("injects with the return values of a function", function () {
+			expect( module.inject_array({
+				array : [1,2,3,4],
+				with  : function ( member ) { 
+					return member * 2
+				}
+			})).toEqual( [1,2,3,4,2,4,6,8] )
+		})
+
+		it("injects only sometimes with a function", function () {
+			expect( module.inject_array({
+				array : [1,2,3,4],
+				with  : function ( member ) { 
+					if ( member % 2 === 0 ) {
+						return member * 2
+					} else {
+						return false
+					}
+				}
+			})).toEqual( [1,2,3,4,4,8] )
+		})
+	})
+
+	describe("surject array", function() {
+		
+		var definition
+		definition = {
+			array : [],
+			with  : [] || {} || function () {},
+			by    : "(removing|extracting)"
+		}
+		definition = {
+			array : [],
+			with  : [] || {} || function () {},
+			by    : "(index|value)"
+		}
+
+		it("removes number members of an array and returns whats left over", function() {
+			expect(module.surject_array({
+				array : [1,2,3,4], 
+				with  : [2,4]
+			})).toEqual( [1,3] )
+		})
+
+		it("cant remove object members of an array based on value #!", function() {
+			expect(module.surject_array({
+				array : [{ s : 1 }, 2, { d : 2 }, 4],
+				with  : [{ s : 1 }, { d : 2 }]
+			})).not.toEqual([2,4])
+		})
+
+		it("removes object members of an array based on index and returns whats left over ", function() {
+			expect(module.surject_array({
+				array : [{ s : 1 }, 2, { d : 2 }, 4],
+				with  : [0,2],
+				by    : "index"
+			})).toEqual( [2,4] )
+		})
+
+		it("leftover members of an array which are objects still contain references to the orignal ones #!", function() {
+			
+			var pass, result
+			pass   = {
+				array : [{ s : 1 }, 2, { d : 2 }, 4],
+				with  : [1,2,3],
+				by    : "index"
+			}
+			result = module.surject_array(pass)
+			expect(result[0]).toBe(pass.array[0])
+		})
+	})
+
+	describe("surject object", function() {
+		it("removes a single key and value by key", function() {
+			var pass, result
+			pass = {
+				object : { "some" : "name", "another" : "value" },
+				with   : ["some"],
+				by     : "key"
+
+			}
+			result = module.surject_object(pass)
+			expect(result).toEqual({ "another" : "value" })
+		})
+
+		it("removes a several keys and values by key", function() {
+			var pass, result
+			pass = {
+				object : { 
+					"some"     : "name", 
+					"another"  : "value",
+					"another2" : "values",
+				},
+				with   : ["some", "another"],
+				by     : "key"
+
+			}
+			result = module.surject_object(pass)
+			expect(result).toEqual({ "another2" : "values" })
+		})
+	})
+
+	describe("get object from array", function ( ) {
 		it("merges", function() {
 			expect(
 				module.get_object_from_array({
@@ -293,164 +451,6 @@
 				first  : [1,2,4],
 				second : [1,4]
 			})).toBe(false)	
-		})
-	})
-
-	describe("inject object", function() {
-
-		it("injects an object into an object", function() {
-			expect( module.inject_object({
-				object : { 
-					s : "some",
-					d : "some other"
-				},
-				with : { 
-					c : "another some"
-				}
-			})).toEqual({
-				s : "some",
-				d : "some other",
-				c : "another some"
-			})
-		})
-
-		it("injects an array into an object", function() {
-			expect( module.inject_object({
-				object : { 
-					a : "some",
-					b : "some other"
-				},
-				with : ["a", "b", "c"]
-			})).toEqual({
-				"a" : "some",
-				"b" : "some other",
-				"0" : "a",
-				"1" : "b",
-				"2" : "c"
-			})
-		})
-	})
-
-	describe("inject array", function() {
-		var definition, input
-		definition = { 
-			array : [],
-			with  : [] || {} || function () {}
-		}
-
-		it("injects array into an array", function() {
-			expect( module.inject_array({
-				array : [1,2,3,4],
-				with  : [5,6,7,8]
-			})).toEqual( [1,2,3,4,5,6,7,8] )
-		})
-
-		it("injects an the values of an object into an array", function() {
-			expect( module.inject_array({
-				array : [1,2,3,4],
-				with  : { s : "a", ss : "b", sss : "c" },
-			})).toEqual( [1,2,3,4, "a", "b", "c" ] )
-		})
-
-		it("injects with the return values of a function", function () {
-			expect( module.inject_array({
-				array : [1,2,3,4],
-				with  : function ( member ) { 
-					return member * 2
-				}
-			})).toEqual( [1,2,3,4,2,4,6,8] )
-		})
-
-		it("injects only sometimes with a function", function () {
-			expect( module.inject_array({
-				array : [1,2,3,4],
-				with  : function ( member ) { 
-					if ( member % 2 === 0 ) {
-						return member * 2
-					} else {
-						return false
-					}
-				}
-			})).toEqual( [1,2,3,4,4,8] )
-		})
-	})
-
-	describe("surject array", function() {
-		
-		var definition
-		definition = {
-			array : [],
-			with  : [] || {} || function () {},
-			by    : "(removing|extracting)"
-		}
-		definition = {
-			array : [],
-			with  : [] || {} || function () {},
-			by    : "(index|value)"
-		}
-
-		it("removes number members of an array and returns whats left over", function() {
-			expect(module.surject_array({
-				array : [1,2,3,4], 
-				with  : [2,4]
-			})).toEqual( [1,3] )
-		})
-
-		it("cant remove object members of an array based on value #!", function() {
-			expect(module.surject_array({
-				array : [{ s : 1 }, 2, { d : 2 }, 4],
-				with  : [{ s : 1 }, { d : 2 }]
-			})).not.toEqual([2,4])
-		})
-
-		it("removes object members of an array based on index and returns whats left over ", function() {
-			expect(module.surject_array({
-				array : [{ s : 1 }, 2, { d : 2 }, 4],
-				with  : [0,2],
-				by    : "index"
-			})).toEqual( [2,4] )
-		})
-
-		it("leftover members of an array which are objects still contain references to the orignal ones #!", function() {
-			
-			var pass, result
-			pass   = {
-				array : [{ s : 1 }, 2, { d : 2 }, 4],
-				with  : [1,2,3],
-				by    : "index"
-			}
-			result = module.surject_array(pass)
-			expect(result[0]).toBe(pass.array[0])
-		})
-	})
-
-	describe("surject object", function() {
-		it("removes a single key and value by key", function() {
-			var pass, result
-			pass = {
-				object : { "some" : "name", "another" : "value" },
-				with   : ["some"],
-				by     : "key"
-
-			}
-			result = module.surject_object(pass)
-			expect(result).toEqual({ "another" : "value" })
-		})
-
-		it("removes a several keys and values by key", function() {
-			var pass, result
-			pass = {
-				object : { 
-					"some"     : "name", 
-					"another"  : "value",
-					"another2" : "values",
-				},
-				with   : ["some", "another"],
-				by     : "key"
-
-			}
-			result = module.surject_object(pass)
-			expect(result).toEqual({ "another2" : "values" })
 		})
 	})
 

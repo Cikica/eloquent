@@ -14,6 +14,38 @@ define({
 		var self = this
 		return [
 			{ 
+				for       : "gregor open year select dropdown",
+				that_does : function ( heard ) {
+					
+					var select_value_node
+					select_value_node = heard.event.target
+					
+					if ( select_value_node.nextSibling.style.display === "none" ) { 
+						select_value_node.nextSibling.style.display = "block"
+					} else { 
+						select_value_node.nextSibling.style.display = "none"
+					}
+
+					return heard
+				}
+			},
+			{ 
+				for       : "gregor open month select dropdown",
+				that_does : function ( heard ) {
+					
+					var select_value_node
+					select_value_node = heard.event.target
+					
+					if ( select_value_node.nextSibling.style.display === "none" ) { 
+						select_value_node.nextSibling.style.display = "block"
+					} else { 
+						select_value_node.nextSibling.style.display = "none"
+					}
+
+					return heard
+				}
+			},
+			{ 
 				for       : "gregor open month choice",
 				that_does : function ( heard ) {
 
@@ -24,7 +56,7 @@ define({
 					calendar_body_parent  = calendar_body.body.parentElement
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
-						with       : {},
+						with       : heard.state.with,
 						type       : "month",
 						show       : true,
 						month      : option_state.date_object.get_month_map(),
@@ -42,12 +74,12 @@ define({
 
 					var option_state, calendar_body, calendar_body_parent
 
-					option_state         = heard.state
-					calendar_body        = option_state.calendar || option_state.body.get("gregor calendar")
-					calendar_body_parent = calendar_body.body.parentElement
+					option_state          = heard.state
+					calendar_body         = option_state.calendar || option_state.body.get("gregor calendar")
+					calendar_body_parent  = calendar_body.body.parentElement
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
-						with       : {},
+						with       : heard.state.with,
 						type       : "year",
 						show       : true,
 						month      : option_state.date_object.get_month_map(),
@@ -75,7 +107,7 @@ define({
 					})
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
-						with       : {},
+						with       : heard.state.with,
 						type       : "day",
 						show       : true,
 						month      : new_year.get_month_map(),
@@ -105,7 +137,7 @@ define({
 					calendar_body_parent  = calendar_body.body.parentElement
 					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
 						class_name : define.with.class_name,
-						with       : {},
+						with       : heard.state.with,
 						type       : "day",
 						month      : new_month.get_month_map(),
 						day        : new_month
