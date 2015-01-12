@@ -13,11 +13,12 @@ define({
 		
 		self    = this
 		content = []
+
 		if ( define.with.control ) {
 			content = content.concat( this.define_control_body( define ) )
 		}
 
-		if ( define.with.data ) { 
+		if ( define.with.data ) {
 			content = content.concat([
 				this.define_row_and_column({
 					class_name : define.class_name,
@@ -28,11 +29,19 @@ define({
 				})
 			])
 		}
-		
-		return {
-			"width" : ( define.with.format.field.width * define.with.data.view.main.column.length ) + "px",
-			"class" : define.class_name.wrap,
-			"child" : content
+
+		if ( define.with.data ) {
+			return {
+				"width" : ( define.with.format.field.width * define.with.data.view.main.column.length ) + "px",
+				"class" : define.class_name.wrap,
+				"child" : content
+			}
+		} else {
+			return {
+				"display" : "none",
+				"class"   : define.class_name.wrap,
+				"child"   : content
+			}
 		}
 	},
 
