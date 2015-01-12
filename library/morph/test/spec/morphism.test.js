@@ -159,7 +159,156 @@
 		})
 	})
 
-	describe("get object from array", function ( ) {
+	describe("biject object", function() {
+
+		it("bijects and returns both key and value", function() {
+			expect( module.biject_object({
+				object : {
+					"some"    : "here",
+					"another" : "over there",
+				},
+				with   : function ( loop ) {
+					return { 
+						key   : loop.key   +"some",
+						value : loop.value +"some",
+					}
+				}
+			})).toEqual({
+				"somesome"    : "heresome",
+				"anothersome" : "over theresome",
+			})
+		})
+
+		it("bijects without returning key or value", function() {
+			expect( module.biject_object({
+				object : {
+					"some"    : "here",
+					"another" : "over there",
+				},
+				with   : function ( loop ) {
+					return { 
+						value : loop.value +"some",
+					}
+				}
+			})).toEqual({
+				"some"    : "heresome",
+				"another" : "over theresome",
+			})
+
+			expect( module.biject_object({
+				object : {
+					"some"    : "here",
+					"another" : "over there",
+				},
+				with   : function ( loop ) {
+					return { 
+						key : loop.key + "some"
+					}
+				}
+			})).toEqual({
+				"somesome"    : "here",
+				"anothersome" : "over there",
+			})	
+		})
+
+		it("bijects into an object of equal size", function() {
+			expect( module.biject_object({
+				object : { 
+					s : "some",
+					d : "some other"
+				},
+				into : {
+					c : "another",
+					b : "mother"
+				},
+				with : function ( loop ) {
+					return { 
+						key   : loop.key + loop.into.key,
+						value : loop.value + " "+ loop.into.value,
+					}
+				}
+			})).toEqual({
+				"sc" : "some another",
+				"db" : "some other mother",
+			})
+		})
+
+		it("returns the original object if given an object and into object of different sizes", function() {
+			expect( module.biject_object({
+				object : { 
+					s : "some",
+					d : "some other"
+				},
+				into : {
+					c : "another",
+				},
+				with : function ( loop ) {
+					return {}
+				}
+			})).toEqual({ 
+				s : "some",
+				d : "some other"
+			})
+		})
+
+		it("converts returned key back to its original if it has the same value as an existing ", function() {
+
+			expect( module.biject_object({
+				object : {
+					"some"    : "here",
+					"another" : "over there",
+				},
+				with   : function ( loop ) {
+					return {
+						key : "somesome"
+					}
+				}
+			})).toEqual({
+				"somesome"    : "here",
+				"another" : "over there",
+			})
+
+			expect( module.biject_object({
+				object : {
+					"some"    : "here",
+					"another" : "over there",
+				},
+				with   : function ( loop ) {
+					return {
+						key   : "somesome",
+						value : "some"
+					}
+				}
+			})).toEqual({
+				"somesome" : "some",
+				"another"  : "some",
+			})
+		})
+	})
+
+	// describe("biject array", function() {
+
+	// 	it("bijects with a method that returns every value", function() {
+	// 		expect(module.biject_array({
+	// 			array : [1,2,3,4,5,6],
+	// 			with  : function ( loop ) { 
+	// 				return loop.index+loop.indexed
+	// 			}
+	// 		})).toEqual([1,3,5,7,9,11])
+	// 	})
+
+	// 	it("bijects into another array cleanly", function() {
+	// 		expect(module.biject_array({
+	// 			array : [1,2,3],
+	// 			into  : [4,5,6],
+	// 			with  : function ( loop ) { 
+	// 				return loop.indexed + loop.into.indexed
+	// 			}
+	// 		})).toEqual([5,7,9])
+	// 	})
+	// })
+
+	describe("get object from arrays", function ( ) {
 		it("merges", function() {
 			expect(
 				module.get_object_from_array({
@@ -557,7 +706,6 @@
 			})
 		})
 	})
-
 
 	describe("flatten object", function() {
 		it("flattens nested objects", function() {

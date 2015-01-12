@@ -39,19 +39,27 @@
 
 	<script>
 
-		var class_name
-		class_name = {
+		var class_name, url_paramaters, paramater_test_url
+
+		class_name         = {
 			"wrap"            : "table_wrap",
 			"content"         : "table_content",
 			"head_wrap"       : "table_head_wrap",
 			"head_name"       : "table_head_name",
 			"body_wrap"       : "table_body_wrap",
 			"row_wrap"        : "table_row_wrap",
+			"link_row_name"   : "table_link_row_name",
 			"row_name"        : "table_row_name",
 			"usable_row_name" : "table_usable_row_name",
 			"control"         : "table_control",
 			"control_button"  : "table_control_button",
 			"control_text"    : "table_control_text"
+		}
+		url_paramaters     = "?url=validate.jsontest.com&paramaters=%7B%22key%22%3A%22value%22%7D"
+		paramater_test_url = window.location.origin + window.location.pathname + url_paramaters
+		if ( ( window.location.href ) !==  paramater_test_url ) {
+			console.log( paramater_test_url )
+			window.location.replace( paramater_test_url )
 		}
 
 		window.table.make({
@@ -109,14 +117,22 @@
 						width : 200
 					}
 				},
-				url : { 
+				url : {
+					only_set_if : function ( given ) { 
+						return true
+					},
 					reader : function ( given ) {
 						return {
-							url  : given.url,
+							url  : "http://"+given.paramater.url,
 							do   : "get",
+							flat : true,
+							with : {
+								json : given.paramater.paramaters
+							},
 						}
 					},
 					setter : function ( given ) {
+						// console.log( given )
 						return { 
 							data : { 
 								view : { 
@@ -125,7 +141,18 @@
 											given.result 
 										),
 										row    : [
-											given.result
+											{ 
+												object_or_array        : {
+													"link"  : "http://validate.jsontest.com/?json=%7B%22key%22:%22value%22%7D",
+													"text" : given.result["object_or_array"]
+												},
+												empty                  : given.result["empty"],
+												parse_time_nanoseconds : given.result[
+													"parse_time_nanoseconds"
+												],
+												validate               : given.result["validate"],
+												size                   : given.result["size"],
+											}
 										]
 									}
 								}
