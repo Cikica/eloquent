@@ -85,7 +85,7 @@ define({
 			}
 
 		}
-
+		
 		return table_interface
 	},
 

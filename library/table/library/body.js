@@ -177,8 +177,6 @@ define({
 					}
 				}
 
-				// console.log( field_definition )
-
 				return {
 					key   : loop.key,
 					value : field_definition,
