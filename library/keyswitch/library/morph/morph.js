@@ -45,33 +45,6 @@
 			}
 		},
 
-		inject_object : function ( what ) {
-
-			if ( what.with.constructor === Array ) {
-				return this.index_loop({
-					subject : what.with,
-					into    : what.object,
-					else_do : function ( loop ) {
-						loop.into[loop.index] = loop.indexed
-						return loop.into
-					}
-				})
-			}
-
-			if ( what.with.constructor === Object ) {
-				return this.object_loop({
-					subject : what.with,
-					"into?" : what.object,
-					else_do : function ( loop ) { 
-						loop.into[loop.key] = loop.value
-						return { 
-							into : loop.into
-						}
-					}
-				})
-			}
-		},
-
 		surject_array : function ( what ) {
 
 			return this.index_loop_base({
@@ -115,7 +88,88 @@
 			})
 		},
 
-		surject_object : function ( what ) { 
+		biject_array : function ( biject ) {
+
+			var self, array, into
+			self  = this
+			array = (
+				biject.array.constructor === HTMLCollection ?
+					self.convert_node_list_to_array( biject.array ) :
+					biject.array
+			)
+
+			return this.base_loop({
+				"subject"    : array,
+				"index"      : 0,
+				"into"       : [],
+				"length"     : biject.array.length,
+				is_done_when : function ( base_loop ) {
+					return base_loop.subject.length === base_loop.into
+				},
+				if_done      : function ( base_loop ) { 
+					console.log( base_loop )
+				},
+				else_do      : function ( base_loop ) {
+					console.log( base_loop )
+				}
+			})
+			// return this.index_loop_base({
+			// 	"subject"  : [],
+			// 	"start_at" : 0,
+			// 	"into"     : [],
+			// 	if_done  : function (base_loop) {
+			// 		return base_loop.into
+			// 	},
+			// 	else_do : function (base_loop) {
+			// 		return {
+			// 			"subject"  : self.copy({
+			// 				what : base_loop.subject 
+			// 			}),
+			// 			"into"     : base_loop.into.concat(
+			// 				biject.with({
+			// 					"index"   : base_loop.start_at,
+			// 					"indexed" : self.copy({
+			// 						what : base_loop.subject[base_loop.start_at]
+			// 					})
+			// 				})
+			// 			),
+			// 			"start_at" : base_loop.start_at + 1,
+			// 			"if_done"  : base_loop.if_done,
+			// 			"else_do"  : base_loop.else_do
+			// 		}
+			// 	}
+			// })
+		},
+
+		inject_object : function ( what ) {
+
+			if ( what.with.constructor === Array ) {
+				return this.index_loop({
+					subject : what.with,
+					into    : what.object,
+					else_do : function ( loop ) {
+						loop.into[loop.index] = loop.indexed
+						return loop.into
+					}
+				})
+			}
+
+			if ( what.with.constructor === Object ) {
+				return this.object_loop({
+					subject : what.with,
+					"into?" : what.object,
+					else_do : function ( loop ) { 
+						loop.into[loop.key] = loop.value
+						return { 
+							into : loop.into
+						}
+					}
+				})
+			}
+		},
+
+		surject_object : function ( what ) {
+			
 			var key, value, what_to_remove
 			key   = this.get_the_keys_of_an_object( what.object )
 			value = this.get_the_values_of_an_object( what.object )
@@ -245,60 +299,6 @@
 					}
 				}
 			})
-		},
-
-		biject_array : function ( biject ) {
-
-			var self, array, into
-			self  = this
-			array = (
-				biject.array.constructor === HTMLCollection ?
-					self.convert_node_list_to_array( biject.array ) :
-					biject.array
-			)
-
-			// return this.base_loop({
-			// 	"index"   : 0,
-			// 	"length"  : biject.array.length,
-			// 	"subject" : array,
-			// 	"into"    : biject.into.slice(0),
-			// 	"result"  : [],
-			// 	is_done_when : function ( base_loop ) {
-			// 		return ( base_loop.index === key.length )
-			// 	},
-			// 	if_done : function ( base_loop ) { 
-			// 		return 
-			// 	},
-			// 	else_do      : function ( base_loop ) {
-			// 	}
-			// })
-
-			// return this.index_loop_base({
-			// 	"subject"  : [],
-			// 	"start_at" : 0,
-			// 	"into"     : [],
-			// 	if_done  : function (base_loop) {
-			// 		return base_loop.into
-			// 	},
-			// 	else_do : function (base_loop) {
-			// 		return {
-			// 			"subject"  : self.copy({
-			// 				what : base_loop.subject 
-			// 			}),
-			// 			"into"     : base_loop.into.concat(
-			// 				biject.with({
-			// 					"index"   : base_loop.start_at,
-			// 					"indexed" : self.copy({
-			// 						what : base_loop.subject[base_loop.start_at]
-			// 					})
-			// 				})
-			// 			),
-			// 			"start_at" : base_loop.start_at + 1,
-			// 			"if_done"  : base_loop.if_done,
-			// 			"else_do"  : base_loop.else_do
-			// 		}
-			// 	}
-			// })
 		},
 
 		object_loop : function ( loop ) { 

@@ -1,42 +1,8 @@
 
 	var module = window.morph
 
-	describe("inject object", function() {
-
-		it("injects an object into an object", function() {
-			expect( module.inject_object({
-				object : { 
-					s : "some",
-					d : "some other"
-				},
-				with : { 
-					c : "another some"
-				}
-			})).toEqual({
-				s : "some",
-				d : "some other",
-				c : "another some"
-			})
-		})
-
-		it("injects an array into an object", function() {
-			expect( module.inject_object({
-				object : { 
-					a : "some",
-					b : "some other"
-				},
-				with : ["a", "b", "c"]
-			})).toEqual({
-				"a" : "some",
-				"b" : "some other",
-				"0" : "a",
-				"1" : "b",
-				"2" : "c"
-			})
-		})
-	})
-
 	describe("inject array", function() {
+		
 		var definition, input
 		definition = { 
 			array : [],
@@ -85,12 +51,7 @@
 		var definition
 		definition = {
 			array : [],
-			with  : [] || {} || function () {},
-			by    : "(removing|extracting)"
-		}
-		definition = {
-			array : [],
-			with  : [] || {} || function () {},
+			with  : [],
 			by    : "(index|value)"
 		}
 
@@ -116,7 +77,7 @@
 			})).toEqual( [2,4] )
 		})
 
-		it("leftover members of an array which are objects still contain references to the orignal ones #!", function() {
+		it("removes leftover members of an array which are objects but still contain references to the orignal ones #!", function() {
 			
 			var pass, result
 			pass   = {
@@ -126,6 +87,69 @@
 			}
 			result = module.surject_array(pass)
 			expect(result[0]).toBe(pass.array[0])
+		})
+	})
+
+	describe("biject array", function() {
+
+		var definition
+		definition = {
+			array : [],
+			with  : undefined || function ( loop ) {}
+		}
+
+		it("bijects with a method that returns every value", function() {
+			expect(module.biject_array({
+				array : [1,2,3,4,5,6],
+				with  : function ( loop ) { 
+					return loop.index+loop.indexed
+				}
+			})).toEqual([1,3,5,7,9,11])
+		})
+
+		// it("bijects into another array cleanly", function() {
+		// 	expect(module.biject_array({
+		// 		array : [1,2,3],
+		// 		into  : [4,5,6],
+		// 		with  : function ( loop ) { 
+		// 			return loop.indexed + loop.into.indexed
+		// 		}
+		// 	})).toEqual([5,7,9])
+		// })
+	})
+
+	describe("inject object", function() {
+
+		it("injects an object into an object", function() {
+			expect( module.inject_object({
+				object : { 
+					s : "some",
+					d : "some other"
+				},
+				with : { 
+					c : "another some"
+				}
+			})).toEqual({
+				s : "some",
+				d : "some other",
+				c : "another some"
+			})
+		})
+
+		it("injects an array into an object", function() {
+			expect( module.inject_object({
+				object : { 
+					a : "some",
+					b : "some other"
+				},
+				with : ["a", "b", "c"]
+			})).toEqual({
+				"a" : "some",
+				"b" : "some other",
+				"0" : "a",
+				"1" : "b",
+				"2" : "c"
+			})
 		})
 	})
 
@@ -285,28 +309,6 @@
 			})
 		})
 	})
-
-	// describe("biject array", function() {
-
-	// 	it("bijects with a method that returns every value", function() {
-	// 		expect(module.biject_array({
-	// 			array : [1,2,3,4,5,6],
-	// 			with  : function ( loop ) { 
-	// 				return loop.index+loop.indexed
-	// 			}
-	// 		})).toEqual([1,3,5,7,9,11])
-	// 	})
-
-	// 	it("bijects into another array cleanly", function() {
-	// 		expect(module.biject_array({
-	// 			array : [1,2,3],
-	// 			into  : [4,5,6],
-	// 			with  : function ( loop ) { 
-	// 				return loop.indexed + loop.into.indexed
-	// 			}
-	// 		})).toEqual([5,7,9])
-	// 	})
-	// })
 
 	describe("get object from arrays", function ( ) {
 		it("merges", function() {
