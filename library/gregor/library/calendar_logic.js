@@ -9,11 +9,18 @@ define({
 	},
 
 	get_day : function ( day ) {
+
 		var date, self
+
 		self = this
-		date = ( day ? this.get_day_map_for( day ) : this.get_day_map_for( new Date() ) )
+		date = ( 
+			day ? 
+				this.get_day_map_for( day ) :
+				this.get_day_map_for( new Date() )
+		)
+
 		return {
-			date : date,
+			date           : date,
 			previous_month : function () {
 				return self.get_day({
 					year  : this.date.year,
@@ -21,28 +28,27 @@ define({
 					day   : this.date.day.number
 				})
 			},
-			next_month : function () {
-				// console.log( this.date.month.number )
+			next_month     : function () {
 				return self.get_day({
 					year  : this.date.year,
 					month : this.date.month.number,
 					day   : this.date.day.number
 				})
 			},
-			get_month_map : function () {
+			get_month_map  : function () {
 				return self.get_month_day_map_for({
 					year  : this.date.year,
 					month : this.date.month.number - 1
 				})
 			},
-			previous_day : function () { 
+			previous_day   : function () {
 				return self.get_day({
 					year  : this.date.year,
 					month : this.date.month.number - 1,
 					day   : this.date.day.number - 1
 				})
 			},
-			next_day : function () {
+			next_day       : function () {
 				return self.get_day({
 					year  : this.date.year,
 					month : this.date.month.number - 1,
@@ -61,8 +67,18 @@ define({
 	},
 
 	get_month_day_map_for : function ( what ) {
+
 		var self = this
-		what = ( what.constructor === Date ? { year : what.getFullYear(), month : what.getMonth() } : what )
+
+		what = ( 
+			what.constructor === Date ? 
+				{ 
+					year  : what.getFullYear(),
+					month : what.getMonth()
+				} :
+				what
+		)
+
 		return this.library.morph.while_greater_than_zero({
 			count   : this.get_number_of_days_for( what ),
 			into    : [],
@@ -80,7 +96,12 @@ define({
 	},
 
 	get_day_map_for : function ( what ) {
-		var date = ( what.constructor === Date ? what : new Date( what.year, what.month, what.day ) )
+		var date = ( 
+			what.constructor === Date ? 
+				what : 
+				new Date( what.year, what.month, what.day )
+		)
+
 		return { 
 			year   : date.getFullYear(),
 			month  : {
@@ -95,7 +116,8 @@ define({
 		}
 	},
 
-	get_day_name_from_number : function ( day_number ) { 
+	get_day_name_from_number : function ( day_number ) {
+
 		var day_name = [
 			"Sunday",
 			"Monday",
@@ -105,10 +127,11 @@ define({
 			"Friday",
 			"Saturday"
 		]
+
 		return day_name[day_number]
 	},
 
-	get_month_name_from_number : function ( month_number ) { 
+	get_month_name_from_number : function ( month_number ) {
 		var month_name = [
 			"January",
 			"February",
@@ -126,7 +149,7 @@ define({
 		return month_name[month_number]
 	},
 
-	get_number_of_days_for : function ( what ) { 
+	get_number_of_days_for : function ( what ) {
 		return ( 32 - new Date( what.year, what.month, 32 ).getDate() )
 	}
 })

@@ -16,17 +16,27 @@
 	{
 		define : {
 			allow   : "*",
-			require : [],
+			require : [
+				"body"
+			],
 		},
 		
 		define_state : function ( define ) {
 
 			var default_value
-			default_value = define.with.option.value || define.with.option.choice[0]
-			if ( define.with.option.multiple_choice && default_value.constructor !== Array ) { 
+			default_value = define.with.option.value || []
+			if ( default_value.constructor !== Array ) {
 				default_value = [ default_value ]
 			}
+
 			return {
+				body           : { 
+					node : define.body.body,
+					map  : {
+						main : this.library.body.define_body_map(),
+						item : this.library.body.define_item_map(),
+					}
+				},
 				original_value : default_value,
 				value          : default_value,
 				show_on        : ( 
@@ -43,7 +53,7 @@
 					called : "reset"
 				},
 				{
-					called       : "keyswitch select",
+					called       : "set value",
 					that_happens : [
 						{ 
 							on : define.body.body,
@@ -51,7 +61,10 @@
 						}
 					],
 					only_if : function ( heard ) {
-						return heard.event.target.hasAttribute("data-keyswitch")
+						return (
+							heard.event.target.hasAttribute("data-item-index") &&
+							heard.event.target.hasAttribute("data-item-value") 
+						)
 					}
 				}
 			]

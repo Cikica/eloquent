@@ -39,13 +39,16 @@ define({
 		}
 		
 		event_circle   = this.library.event_master.make({
+			state  : this.define_state({
+				body : keyswitch_body,
+				with : define.with,
+			}),
 			events : this.define_event({
 				body : keyswitch_body,
 				with : define.with 
 			}),
-			state  : this.define_state( define ),
 		})
-
+		
 		event_circle.add_listener(
 			this.define_listener({
 				class_name : define.class_name,

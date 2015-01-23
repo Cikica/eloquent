@@ -7,6 +7,7 @@ define({
 			"calendar_logic",
 			"body",
 			"transistor",
+			"bodymap",
 		]
 	},
 
@@ -14,7 +15,7 @@ define({
 		var self = this
 		return [
 			{ 
-				for       : "gregor open year select dropdown",
+				for       : "open year select dropdown",
 				that_does : function ( heard ) {
 					
 					var select_value_node
@@ -30,7 +31,7 @@ define({
 				}
 			},
 			{ 
-				for       : "gregor open month select dropdown",
+				for       : "open month select dropdown",
 				that_does : function ( heard ) {
 					
 					var select_value_node
@@ -46,7 +47,7 @@ define({
 				}
 			},
 			{ 
-				for       : "gregor open month choice",
+				for       : "open month choice",
 				that_does : function ( heard ) {
 
 					var option_state, calendar_body, calendar_body_parent
@@ -69,7 +70,7 @@ define({
 				}
 			},
 			{ 
-				for       : "gregor open year choice",
+				for       : "open year choice",
 				that_does : function ( heard ) {
 
 					var option_state, calendar_body, calendar_body_parent
@@ -92,45 +93,66 @@ define({
 				}
 			},
 			{ 
-				for       : "gregor choose year",
+				for       : "choose year",
 				that_does : function ( heard ) {
 					
-					var option_state, calendar_body, new_year, calendar_body_parent
+					var option_state, calendar_body, new_year, calendar_body_parent, body
 
-					option_state         = heard.state
-					calendar_body        = option_state.calendar || option_state.body.get("gregor calendar")
-					calendar_body_parent = calendar_body.body.parentElement
-					new_year             = self.library.calendar_logic.get_day({
+					// body                  = self.
+					option_state          = heard.state
+					calendar_body         = option_state.calendar || option_state.body.get("gregor calendar")
+					calendar_body_parent  = calendar_body.body.parentElement
+					new_year              = self.library.calendar_logic.get_day({
 						year  : heard.event.target.getAttribute("data-gregor-set-year"),
-						month : option_state.date_object.date.month.number,
+						month : option_state.date_object.date.month.number - 1,
 						day   : option_state.date_object.date.day.number
 					})
-					option_state.calendar = self.library.transistor.make( self.library.body.define_calendar({
-						class_name : define.with.class_name,
-						with       : heard.state.with,
-						type       : "day",
-						show       : true,
-						month      : new_year.get_month_map(),
-						day        : new_year
-					}))
+					
 					option_state.date_object = new_year
+					option_state.calendar    = self.library.transistor.make( 
+						self.library.body.define_calendar({
+							class_name : define.with.class_name,
+							with       : heard.state.with,
+							type       : "day",
+							show       : true,
+							month      : new_year.get_month_map(),
+							day        : new_year
+						})
+					)
+
 					calendar_body_parent.removeChild( calendar_body.body )
 					option_state.calendar.append( calendar_body_parent )
+
+					console.log( heard.event.target )
+
+					// calendar_body.body.style.left = heard.event.target.offsetLeft + "px"
+					// calendar_body.body.style.top  = ( heard.event.target.offsetTop + heard.event.target.clientHeight ) + "px"
 					
 					return heard
 				}
 			},
 			{ 
-				for       : "gregor chose month",
+				for       : "chose month",
 				that_does : function ( heard ) {
 
-					var option_state, calendar_body, calendar_body_parent, next_month
-					
-					option_state          = heard.state
-					new_month             = self.library.calendar_logic.get_day({
+					var option_state, calendar_body, calendar_body_parent, next_month,
+					new_month_number, number_of_days_in_next_month
+
+					option_state                 = heard.state
+					new_month_number             = heard.event.target.getAttribute("data-gregor-set-month")
+					number_of_days_in_next_month = self.library.calendar_logic.get_day({
 						year  : option_state.date_object.date.year,
-						month : heard.event.target.getAttribute("data-gregor-set-month"),
+						month : new_month_number,
 						day   : 1
+					}).get_month_map().length
+					next_month                   = self.library.calendar_logic.get_day({
+						year  : option_state.date_object.date.year,
+						month : new_month_number,
+						day   : ( 
+							option_state.date_object.date.day.number > number_of_days_in_next_month ?
+								number_of_days_in_next_month : 
+								option_state.date_object.date.day.number
+						)
 					})
 
 					calendar_body         = option_state.calendar || option_state.body.get("gregor calendar")
@@ -139,12 +161,12 @@ define({
 						class_name : define.with.class_name,
 						with       : heard.state.with,
 						type       : "day",
-						month      : new_month.get_month_map(),
-						day        : new_month
+						month      : next_month.get_month_map(),
+						day        : next_month
 					}))
 
 					option_state.calendar.body.style.display = "block"
-					option_state.date_object                 = new_month
+					option_state.date_object                 = next_month
 					option_state.selected                    = false
 
 					calendar_body_parent.removeChild( calendar_body.body )
@@ -154,7 +176,7 @@ define({
 				}
 			},
 			{ 
-				for       : "gregor toggle calendar",
+				for       : "toggle calendar",
 				that_does : function ( heard ) {
 					
 					var option_state, calendar_body
@@ -165,11 +187,14 @@ define({
 						calendar_body.body.style.display === "block" ?
 							"none" : "block"
 					)
+					calendar_body.body.style.left = heard.event.target.offsetLeft + "px"
+					calendar_body.body.style.top  = ( heard.event.target.offsetTop + heard.event.target.clientHeight ) + "px"
+
 					return heard
 				}
 			},
 			{
-				for       : "gregor chose date",
+				for       : "chose date",
 				that_does : function ( heard ){
 					
 					var date, option_state, text_body, previous_date_body, calendar_body

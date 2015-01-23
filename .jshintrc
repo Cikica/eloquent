@@ -1,0 +1,20 @@
+{
+  "asi"       : true,
+  "camelcase" : false,
+  "curly"     : true,
+  "eqeqeq"    : true,
+  "eqnull"    : true,
+  "globals"   : {
+    "window"   : true,
+    "document" : true
+  },
+  "freeze"    : true,
+  "indent"    : 4,
+  "immed"     : true,
+  "latedef"   : true,
+  "noarg"     : true,
+  "nocomma"   : false,
+  "noempty"   : true,
+  "unused"    : true,
+  "undef"     : true
+}

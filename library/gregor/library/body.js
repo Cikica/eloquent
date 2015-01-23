@@ -42,10 +42,11 @@ define({
 
 	define_calendar : function ( define ) {
 		return {
-			"display" : ( define.show ? "block" : "none" ),
-			"class"   : define.class_name.calendar,
-			"mark_as" : "gregor calendar",
-			"child"   : this.define_calendar_body( define )
+			"display"  : ( define.show ? "block" : "none" ),
+			"class"    : define.class_name.calendar,
+			"mark_as"  : "gregor calendar",
+			"position" : "absolute",
+			"child"    : this.define_calendar_body( define )
 		}
 	},
 
@@ -107,8 +108,10 @@ define({
 		return body_definition
 	},
 
-	define_control_year_by_dropdown : function ( define ) { 
+	define_control_year_by_dropdown : function ( define ) {
+
 		var current, self
+
 		self    = this
 		current = this.library.calendar_logic.get_day()
 		return { 

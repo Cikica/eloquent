@@ -5,6 +5,7 @@ define({
 		"library/body",
 		"library/listener",
 		"library/event",
+		"library/bodymap",
 	],
 	package : [
 		"library/transistor",

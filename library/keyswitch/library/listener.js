@@ -17,7 +17,9 @@
 		define : {
 			allow   : "*",
 			require : [
-				"morph"
+				"morph",
+				"body",
+				"bodymap",
 			],
 		},
 
@@ -78,76 +80,60 @@
 					}
 				},
 				{
-					for       : "keyswitch select",
+					for       : "set value",
 					that_does : function ( heard ) {
 
-						var value, button, wrap
-						
-						button = heard.event.target
-						wrap   = button.parentElement
-						value  = button.getAttribute("data-value")
+						var body, item_index, item_value, value_is_set
 
-						if ( define.with.option.multiple_choice ) {
-							
-							var button_is_selected = button.getAttribute("data-selected")
+						item_index   = heard.event.target.getAttribute("data-item-index")
+						item_value   = heard.event.target.getAttribute("data-item-value")
+						value_is_set = ( heard.state.value.indexOf( item_value ) > -1 )
+						body         = self.library.bodymap.make({
+							body : heard.state.body.node,
+							map  : heard.state.body.map.main
+						})
 
-							if ( button_is_selected === "true" && heard.state.value.length > 1 ) {
+						self.set_or_unset_item({
+							class_name : define.class_name,
+							node       : body.items[item_index],
+							value      : item_value,
+							index      : item_index,
+							map        : heard.state.body.map.item,
+							set        : value_is_set
+						})
 
-								button.setAttribute("data-selected", "false")
-								button.setAttribute("class", define.class_name.item )
-								heard.state.value = self.library.morph.surject_array({
-									array : heard.state.value,
-									with  : [ value ]
-								})
-							}
-
-							if ( button_is_selected === "false" ) {
-
-								button.setAttribute("data-selected", "true")
-								button.setAttribute("class", define.class_name.item_selected )
-								heard.state.value = heard.state.value.concat( value )
-							}
-						}
-
-						console.log( heard.state.value )
-						if ( !define.with.option.multiple_choice ) {
-							
-							button.setAttribute("class", define.class_name.item_selected )
-							button.setAttribute("data-selected", "true")
-							
-							self.library.morph.index_loop({
-								subject : button.parentElement.children,
-								else_do : function ( loop ) {
-									if ( loop.indexed !== button ) { 
-										loop.indexed.setAttribute("class", define.class_name.item )
-										button.setAttribute("data-selected", "false")
-									}
-									return []
-								}
+						heard.state.value = ( value_is_set ? 
+							self.library.morph.surject_array({
+								array : heard.state.value,
+								with  : [ item_value ]
+							}) :
+							self.library.morph.inject_array({
+								array : heard.state.value,
+								with  : [ item_value ]
 							})
-
-							heard.state.value = value
-						}
-
-						// if ( define.with.input ) { 
-							
-						// 	var input_wrap_node
-						// 	input_wrap_node = wrap.nextSibling
-
-						// 	if ( button.getAttribute("data-value") === define.with.input.show_on ) {
-
-						// 		input_wrap_node.style.display = "block"
-
-						// 		console.log( input_wrap_node )
-						// 	} else { 
-						// 		input_wrap_node.style.display = "none"
-						// 	}
-						// }
+						)
 
 						return heard
 					}
 				}
 			]
+		},
+
+		set_or_unset_item : function ( define ) {
+
+			var body
+			body = this.library.bodymap.make({
+				body : define.node,
+				map  : define.map,
+			})
+
+			if ( define.set ) {
+				body.box.setAttribute("class",  define.class_name.item_box )
+				body.text.setAttribute("class", define.class_name.item )
+			} else { 
+				body.box.setAttribute("class",  define.class_name.item_box_selected )
+				body.text.setAttribute("class", define.class_name.item_selected )
+			}
 		},
 	}
 )
