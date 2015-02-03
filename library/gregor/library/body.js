@@ -6,6 +6,28 @@ define({
 			"calendar_logic"
 		]
 	},
+
+	define_body_map : function () { 
+		return {
+			"head"          : "first",
+			"label"         : "first:first",
+			"input"         : "first:last",
+			"calendar"      : "last",
+		}
+	},
+
+	define_calendar_map : function ( define ) {
+
+		var map
+		map = {
+			"control"     : "first",
+			"body"        : "last",
+			"day_headers" : "last:first",
+			"day_body"    : "last:last",
+		}
+
+		return map
+	},
 	
 	make : function ( define ) {
 

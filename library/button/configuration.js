@@ -2,10 +2,13 @@ define({
 	name    : "button",
 	main    : "button",
 	module  : [
-		"library/event_master",
-		"library/morphism",
+		"library/event",
+		"library/listener",
+		"library/body",
+		"library/bodymap",
 	],
 	package : [
-		"library/morph"
+		"library/morph",
+		"library/piero"
 	]
 })

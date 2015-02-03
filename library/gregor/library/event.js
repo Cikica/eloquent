@@ -3,26 +3,66 @@ define({
 	define : {
 		allow   : "*",
 		require : [
-			"calendar_logic"
+			"calendar_logic",
+			"body"
 		]
 	},
 
-	define_state : function ( define ) { 
+	define_state : function ( define ) {
+		
 		return {
 			body : { 
 				node : define.body.body,
-				map  : {}
+				map  : {
+					main     : this.library.body.define_body_map(),
+					calendar : this.library.body.define_calendar_map({
+						with : define.with.with
+					})
+				}
 			},
-			body        : define.body.get("gregor"),
-			map         : {},
 			date_object : this.library.calendar_logic.get_day(),
-			with        : define.with.with
+			with        : define.with.with,
 		}
 	},
 	
-	make : function ( define ) { 
-		var self = this
+	make : function ( define ) {
 		return [
+			{ 
+				called       : "toggle calendar",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return heard.event.target.hasAttribute("data-gregor-set-date")
+				}
+			},
+			{ 
+				called       : "choose year",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) {
+					return heard.event.target.hasAttribute("data-gregor-set-year")
+				}
+			},
+			{ 
+				called       : "chose month",
+				that_happens : [
+					{ 
+						on : define.body.body,
+						is : [ "click" ]
+					}
+				],
+				only_if : function ( heard ) { 
+					return heard.event.target.hasAttribute("data-gregor-set-month")
+				}
+			},
 			{ 
 				called       : "open year select dropdown",
 				that_happens : [
@@ -69,42 +109,6 @@ define({
 				],
 				only_if : function ( heard ) {
 					return ( heard.event.target.hasAttribute("data-gregor-choose-year") )
-				}
-			},
-			{ 
-				called       : "choose year",
-				that_happens : [
-					{ 
-						on : define.body.body,
-						is : [ "click" ]
-					}
-				],
-				only_if : function ( heard ) {
-					return ( heard.event.target.hasAttribute("data-gregor-set-year") )
-				}
-			},
-			{ 
-				called       : "chose month",
-				that_happens : [
-					{ 
-						on : define.body.body,
-						is : [ "click" ]
-					}
-				],
-				only_if : function ( heard ) { 
-					return ( heard.event.target.hasAttribute("data-gregor-set-month") )
-				}
-			},
-			{ 
-				called       : "toggle calendar",
-				that_happens : [
-					{ 
-						on : define.body.body,
-						is : [ "click" ]
-					}
-				],
-				only_if : function ( heard ) { 
-					return ( heard.event.target.hasAttribute("data-gregor-set-date") )
 				}
 			},
 			{

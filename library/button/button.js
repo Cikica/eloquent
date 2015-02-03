@@ -3,9 +3,13 @@ define({
 	define : {
 		allow   : "*",
 		require : [
+			// "event_master",
 			"transistor",
 			"morph",
-			"event_master"
+			"event",
+			"listener",
+			"body",
+			"piero"
 		]
 	},
 
@@ -17,8 +21,11 @@ define({
 		button_body  = this.library.transistor.make(
 			this.define_body( define )
 		)
-		event_circle = this.library.event_master.make({
-			state  : this.define_state( define ),
+		event_circle = this.library.piero.make({
+			state  : this.define_state({
+				body : button_body,
+				with : define 
+			}),
 			events : this.define_event({
 				body : button_body,
 			})
@@ -31,7 +38,7 @@ define({
 		)
 		return this.define_interface({
 			body         : button_body,
-			event_master : event_circle 
+			event_master : event_circle
 		})
 	},
 
@@ -44,58 +51,26 @@ define({
 			},
 			set_state : function ( state ) { 
 				define.event_master.set_state( state )
+			},
+			set_additional_button_text : function ( set ) { 
+
 			}
 		}
 	},
 
 	define_state : function ( define ) { 
-		return { 
-
-		}
+		return this.library.event.define_state( define )
 	},
 
 	define_event : function ( define ) {
-		return [
-			{ 
-				called       : "click",
-				that_happens : [
-					{
-						on : define.body.body,
-						is : [ "click" ]
-					}
-				],
-				only_if : function ( heard ) { 
-					return true
-				}
-			}
-		]
+		return this.library.event.define_event( define )
 	},
 
 	define_listener : function ( define ) {
-		return [
-			{ 
-				for       : "click",
-				that_does : function ( heard ) {
-
-					if ( define.with.click && define.with.click.method ) { 
-						return define.with.click.method.call({}, heard )
-					}
-
-					return heard
-				}
-			}
-		]
+		return this.library.listener.define_listener( define )
 	},
 
 	define_body : function ( define ) {
-		return {
-			"class" : define.class_name.wrap,
-			"child" : [
-				{ 
-					"class" : define.class_name.body,
-					"text"  : define.with.content.text
-				}
-			]
-		}
+		return this.library.body.define_body( define )
 	}
 })

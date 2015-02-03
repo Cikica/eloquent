@@ -6,7 +6,8 @@
   "eqnull"    : true,
   "globals"   : {
     "window"   : true,
-    "document" : true
+    "document" : true,
+    "define"   : true
   },
   "freeze"    : true,
   "indent"    : 4,

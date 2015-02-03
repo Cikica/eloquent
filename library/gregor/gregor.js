@@ -13,14 +13,42 @@ define({
 		]
 	},
 
+	define_default_options : function () { 
+		return {
+			class_name : {},
+			with       : {
+				yomoma : {
+					"some" : "yeah i said it"
+				},
+				month : {
+					type : "dropdown"
+				},
+				year : { 
+					type : "dropdown"
+				},
+				input : { 
+					text : ""
+				},
+				get : { 
+					with : function ( state ) {
+						console.log( state )
+						return "some"
+					}
+				}
+			}
+		}
+	},
+
 	make : function ( define ) {
-		
+
 		var gregor_body, event_circle
+
 		gregor_body = this.library.transistor.make(
 			this.define_body(
 				define
 			)
 		)
+
 		event_circle = this.library.event_master.make({
 			state  : this.define_state({
 				body : gregor_body,
@@ -33,15 +61,16 @@ define({
 		})
 		event_circle.add_listener(
 			this.define_listener({
-				body : gregor_body,
-				with : define
+				body       : gregor_body,
+				class_name : define.class_name,
+				with       : define
 			})
 		)
 
 		return this.define_interface({
-			body              : gregor_body,
-			event_master      : event_circle,
-			with              : define.with
+			body         : gregor_body,
+			event_master : event_circle,
+			with         : define.with
 		})
 	},
 

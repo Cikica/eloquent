@@ -104,7 +104,6 @@
 			expect(module.biject_array({
 				array : [1,2,3,4,5,6],
 				with  : function ( loop ) {
-					console.log( loop )
 					return loop.index+loop.indexed
 				}
 			})).toEqual([1,3,5,7,9,11])
@@ -145,7 +144,68 @@
 		// })
 	})
 
-	describe("inject object", function() {
+	describe("inject object", function () {
+
+		// it("acts a nested object merger", function() {
+		// 	expect(module.inject_object({
+		// 		object : { 
+		// 			c : "some",
+		// 			d : { 
+		// 				a  : "some",
+		// 				bb : [1,2,3],
+		// 				m  : { 
+		// 					a : "2"
+		// 				}
+		// 			}
+		// 		},
+		// 		with : { 
+		// 			c : "some1",
+		// 			l : {
+		// 				c : [1,2,3]
+		// 			},
+		// 			d : {
+		// 				a  : "some2",
+		// 				b  : "some3",
+		// 				bb : [1,2,34],
+		// 				c  : [12,34]
+		// 			}
+		// 		},
+		// 	})).toEqual({
+		// 		c : "some1",
+		// 		l : {
+		// 			c : [1,2,3]
+		// 		},
+		// 		d : { 
+		// 			a  : "some2",
+		// 			b  : "some3",
+		// 			bb : [1,2,34],
+		// 			c  : [12,34],
+		// 			m  : {
+		// 				a : "1"
+		// 			}
+		// 		}
+		// 	})
+		// })
+
+		it("replaces the propertyies of the object with the other object given if there are duplicates", function() {
+			expect(module.inject_object({
+				object : {
+					c : "some1",
+					b : "somesome",
+					l : "s0",
+				},
+				with : {
+					c : "some",
+					d : "some2",
+					l : "s1"
+				}
+			})).toEqual({
+				c : "some",
+				d : "some2",
+				b : "somesome",
+				l : "s1"
+			})
+		})
 
 		it("injects an object into an object", function() {
 			expect( module.inject_object({
@@ -180,7 +240,8 @@
 		})
 	})
 
-	describe("surject object", function() {
+	describe("surject object", function () {
+
 		it("removes a single key and value by key", function() {
 			var pass, result
 			pass = {
@@ -207,6 +268,22 @@
 			}
 			result = module.surject_object(pass)
 			expect(result).toEqual({ "another2" : "values" })
+		})
+
+		it("removes a single key and value by value", function() {
+			var pass, result
+			pass = {
+				object : { 
+					"some"     : "name", 
+					"another"  : "value",
+					"another2" : "values",
+				},
+				with   : ["name", "values"],
+				by     : "value"
+
+			}
+			result = module.surject_object( pass )
+			expect( result ).toEqual({ "another" : "value" })
 		})
 	})
 
@@ -340,7 +417,7 @@
 	describe("get object from arrays", function ( ) {
 		it("merges", function() {
 			expect(
-				module.get_object_from_array({
+				module.create_object_from_key_and_value_array({
 					key   : ["s", "d"],
 					value : [1,2]
 				})
@@ -351,7 +428,7 @@
 		})
 		it("mergers with a method", function() {
 			expect(
-				module.get_object_from_array({
+				module.create_object_from_key_and_value_array({
 					key     : ["s", "d"],
 					value   : [1,2],
 					else_do : function ( loop ) {
@@ -364,8 +441,133 @@
 			})
 		})
 	})
+
+	describe("object loop", function() {
+
+		// it("does not lose keys when triple nesting and so forth", function() {
+		// 	expect(module.object_loop({
+		// 		"subject" : { 
+		// 			c : "some1",
+		// 			l : {
+		// 				c : [1,2,3]
+		// 			},
+		// 			d : {
+		// 				a  : "some2",
+		// 				b  : "some3",
+		// 				bb : [1,2,34],
+		// 				c  : [12,34]
+		// 			}
+		// 		},
+		// 		"into?" : {
+		// 			c : "some",
+		// 			d : { 
+		// 				a  : "some",
+		// 				bb : [1,2,3],
+		// 				m  : { 
+		// 					a : "2"
+		// 				}
+		// 			}
+		// 		},
+		// 		else_do : function ( loop ) {
+		// 			loop.into[loop.key] = loop.value
+		// 			return { 
+		// 				into : loop.into
+		// 			}
+		// 		}
+		// 	})).toEqual({
+		// 		c : "some1",
+		// 		l : {
+		// 			c : [1,2,3]
+		// 		},
+		// 		d : { 
+		// 			a  : "some2",
+		// 			b  : "some3",
+		// 			bb : [1,2,34],
+		// 			c  : [12,34],
+		// 			m  : {
+		// 				a : "1"
+		// 			}
+		// 		}
+		// 	})	
+		// })
+
+		it("loops through an object with a simple else do", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4"
+					}
+				}
+			})).toEqual({
+				"02s" : "d04",
+				"12b" : "some14",
+			})
+		})
+
+		it("loops through an object with an if done", function() {
+
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				"if_done?" : function ( loop ) {
+					return [ loop.key[0], loop.value[0], loop.key[1], loop.value[1] ].join(":")
+				},
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4"
+					}
+				}
+			})).toEqual("02s:d04:12b:some14")
+		})
+
+		it("loops through an object with the into string", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "d",
+					b : "some"
+				},
+				"into?"    : "some",
+				else_do : function ( loop ) {
+					return {
+						key   : loop.index + "2" + loop.key,
+						value : loop.value + loop.index + "4",
+						into  : loop.into + "s"
+					}
+				}
+			})).toEqual("somess")
+		})
+
+		it("loops through an object that has empty values and dosent freak out", function() {
+			expect(module.object_loop({
+				subject : {
+					s : "",
+					d : "some",
+					c : "",
+				},
+				else_do : function ( loop ) { 
+					return {
+						key   : loop.key,
+						value : loop.value
+					}
+				}
+			})).toEqual({
+				s : "",
+				d : "some",
+				c : "",
+			})
+		})
+	})
 	
 	describe("index loop", function () {
+		
 		var input_1, input_2, input_3
 		input_1 = {
 			subject   : [1,2,3],
@@ -537,6 +739,13 @@
 	})
 
 	describe("are these two values the same", function() {
+
+		it("knows that two numbers are the same", function() {
+			expect( module.are_these_two_values_the_same({
+				first  : 123,
+				second : 123
+			})).toBe(true)
+		})
 		
 		it("knows that two strings are the same", function() {
 			expect( module.are_these_two_values_the_same({
@@ -624,6 +833,13 @@
 			})).toBe(true)	
 		})
 
+		it("knows that two complex arrays are the same", function() {
+			expect( module.are_these_two_values_the_same({
+				first  : ["some", 123, "some other", { s : 1 }],
+				second : ["some", 123, "some other", { s : 1 }],
+			})).toBe( true )
+		})
+
 		it("knows that two arrays are not the same", function() {
 			expect( module.are_these_two_values_the_same({
 				first  : [1,2,4],
@@ -632,8 +848,71 @@
 		})
 	})
 
-	describe("biject ", function() {
+	describe("does array contain this value", function() {
 		
+		it("indentifies that array contains string or number", function() {
+			expect(module.does_array_contain_this_value({
+				array : [1,2,3,4],
+				value : 2
+			})).toBe(true)
+
+			expect(module.does_array_contain_this_value({
+				array : [1,"some",3,4],
+				value : "some"
+			})).toBe(true)
+
+			expect(module.does_array_contain_this_value({
+				array : [1,"some",3,4],
+				value : "somessd"
+			})).toBe(false)
+		})
+
+		it("indentifies that array contains object", function() {
+			expect(module.does_array_contain_this_value({
+				array : [
+					{ 
+						s : 1, 
+						b : { 
+							a : 1, 
+							d : "some" 
+						} 
+					}, 
+					"some", 
+					123 
+				],
+				value : { 
+					s : 1, 
+					b : { 
+						a : 1, 
+						d : "some" 
+					} 
+				}
+			})).toBe(true)
+
+			expect(module.does_array_contain_this_value({
+				array : [
+					{ 
+						s : 1, 
+						b : { 
+							a : 1, 
+							d : "some" 
+						} 
+					}, 
+					"some", 
+					123 
+				],
+				value : { 
+					s : 1, 
+				}
+			})).toBe(false)
+		})
+
+		it("indentifies that array contains array", function() {
+			expect(module.does_array_contain_this_value({
+				array : [ ["some", 123, "some other", { s : 1 }], "some", 123 ],
+				value : ["some", 123, "some other", { s : 1 }]
+			})).toBe(true)		
+		})
 	})
 
 	describe("get the values of an object", function() {
@@ -657,82 +936,6 @@
 				s : 1,
 				d : 2
 			})).toEqual([ "s", "d" ])
-		})
-	})
-
-	describe("object loop", function() {
-
-		it("loops through an object with a simple else do", function() {
-			expect(module.object_loop({
-				subject : {
-					s : "d",
-					b : "some"
-				},
-				else_do : function ( loop ) {
-					return {
-						key   : loop.index + "2" + loop.key,
-						value : loop.value + loop.index + "4"
-					}
-				}
-			})).toEqual({
-				"02s" : "d04",
-				"12b" : "some14",
-			})
-		})
-
-		it("loops through an object with an if done", function() {
-			expect(module.object_loop({
-				subject : {
-					s : "d",
-					b : "some"
-				},
-				"if_done?" : function ( loop ) {
-					return [ loop.key[0], loop.value[0], loop.key[1], loop.value[1] ].join(":")
-				},
-				else_do : function ( loop ) {
-					return {
-						key   : loop.index + "2" + loop.key,
-						value : loop.value + loop.index + "4"
-					}
-				}
-			})).toEqual("02s:d04:12b:some14")
-		})
-
-		it("loops through an object with the into string", function() {
-			expect(module.object_loop({
-				subject : {
-					s : "d",
-					b : "some"
-				},
-				"into?"    : "some",
-				else_do : function ( loop ) {
-					return {
-						key   : loop.index + "2" + loop.key,
-						value : loop.value + loop.index + "4",
-						into  : loop.into + "s"
-					}
-				}
-			})).toEqual("somess")
-		})
-
-		it("loops through an object that has empty values and dosent freak out", function() {
-			expect(module.object_loop({
-				subject : {
-					s : "",
-					d : "some",
-					c : "",
-				},
-				else_do : function ( loop ) { 
-					return {
-						key   : loop.key,
-						value : loop.value
-					}
-				}
-			})).toEqual({
-				s : "",
-				d : "some",
-				c : "",
-			})
 		})
 	})
 
@@ -837,7 +1040,7 @@
 			result = module.copy_value({
 				value : object
 			})
-			console.log( result )
+			
 			result.s     = 5
 			result.d     = 55
 			result.c.b   = "some"

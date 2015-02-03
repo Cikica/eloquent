@@ -192,11 +192,11 @@
 
 			if ( what.with.constructor === Object ) {
 				return this.object_loop({
-					subject : what.with,
-					"into?" : what.object,
-					else_do : function ( loop ) { 
+					subject    : what.with,
+					"into?"    : what.object,
+					else_do : function ( loop ) {
 						loop.into[loop.key] = loop.value
-						return { 
+						return {
 							into : loop.into
 						}
 					}
@@ -206,13 +206,35 @@
 
 		surject_object : function ( what ) {
 			
-			var key, value, what_to_remove
+			var key, value, what_to_remove, self, index_of_object_member_to_remove
+
+			self  = this
 			key   = this.get_the_keys_of_an_object( what.object )
 			value = this.get_the_values_of_an_object( what.object )
 
-			if ( what.by === "key" ) { 
-				var removed_key_index, new_key
-				removed_key_index = this.index_loop({
+			if ( what.by === undefined || what.by === "value" ) {
+
+				index_of_object_member_to_remove = this.index_loop({
+					subject : value,
+					else_do : function ( loop ) {
+						
+						var surject_indexed_value
+						surject_indexed_value = self.does_array_contain_this_value({
+							array : what.with,
+							value : loop.indexed
+						})
+
+						return ( surject_indexed_value ?
+							loop.into.concat( loop.index ) : 
+							loop.into 
+						)
+					}
+				})
+			}
+
+			if ( what.by === "key" ) {
+
+				index_of_object_member_to_remove = this.index_loop({
 					subject : key,
 					else_do : function ( loop ) { 
 						return ( what.with.indexOf( loop.indexed ) > -1 ?
@@ -221,20 +243,20 @@
 						)
 					}
 				})
-				
-				return this.get_object_from_array({
-					key : this.surject_array({
-						array : key,
-						with  : removed_key_index,
-						by    : "index",
-					}),
-					value : this.surject_array({
-						array : value,
-						with  : removed_key_index,
-						by    : "index",
-					})
-				})
 			}
+				
+			return this.create_object_from_key_and_value_array({
+				key : this.surject_array({
+					array : key,
+					with  : index_of_object_member_to_remove,
+					by    : "index",
+				}),
+				value : this.surject_array({
+					array : value,
+					with  : index_of_object_member_to_remove,
+					by    : "index",
+				})
+			})
 		},
 
 		biject_object : function ( biject ) {
@@ -256,8 +278,16 @@
 				"length"  : key.length,
 				"subject" : key.slice(0),
 				"into"    : { 
-					key   : ( biject.into ? into_key : [] ),
-					value : ( biject.into ? into_value : [] ),
+					key   : ( 
+						biject.into ? 
+							into_key : 
+							[] 
+					),
+					value : ( 
+						biject.into ? 
+							into_value : 
+							[] 
+					),
 				},
 				"map" : {
 					"key"   : [],
@@ -267,12 +297,12 @@
 					return ( base_loop.index === key.length )
 				},
 				if_done : function ( base_loop ) { 
-					return self.get_object_from_array({
+					return self.create_object_from_key_and_value_array({
 						key   : base_loop.map.key,
 						value : base_loop.map.value
 					})
 				},
-				else_do      : function ( base_loop ) {
+				else_do : function ( base_loop ) {
 					
 					var given, current_key, current_value, given_key_index_in_given_keys, final_value
 
@@ -342,7 +372,9 @@
 			var key, value, self
 			self  = this
 			key   = this.get_the_keys_of_an_object( loop.subject )
-			value = this.get_the_values_of_an_object( loop.subject )
+			value = this.copy_value({
+				value : this.get_the_values_of_an_object( loop.subject )
+			})
 
 			return this.base_loop({
 				length  : key.length,
@@ -357,8 +389,10 @@
 					return ( base_loop.index === key.length )
 				},
 				if_done     : function ( base_loop ) {
+
 					var result, object
-					object = self.get_object_from_array({
+
+					object = self.create_object_from_key_and_value_array({
 						key   : base_loop.map.key,
 						value : base_loop.map.value
 					})
@@ -418,40 +452,32 @@
 		},
 
 		does_array_contain_this_value : function ( contained ) { 
+
 			var self = this
-			return this.index_loop_base({
-				subject  : contained.array,
-				into     : false,
-				start_at : 0,
-				if_done  : function ( loop ) { 
-					return loop.into
-				},
+
+			return this.index_loop({
+				subject : contained.array,
+				into    : false,
 				else_do : function ( loop ) {
-					var does_contained_value_match_indexed_value
-					does_contained_value_match_indexed_value = self.are_these_two_values_the_same({
-						first  : loop.subject[loop.start_at],
+
+					var indexed_value_matches_given_value
+
+					indexed_value_matches_given_value = self.are_these_two_values_the_same({
+						first  : loop.indexed,
 						second : contained.value
 					})
-					console.log( does_contained_value_match_indexed_value )
-					return {
-						subject         : loop.subject,
-						start_at        : (
-							does_contained_value_match_indexed_value ? 
-								loop.subject.length-1 :
-								loop.start_at + 1
-						),
-						into    : does_contained_value_match_indexed_value,
-						if_done : loop.if_done,
-						else_do : loop.else_do
+
+					if ( loop.into === false && indexed_value_matches_given_value === true ) { 
+						loop.into = true
 					}
+
+					return loop.into
 				}
 			})
 		},
 
 		are_these_two_values_the_same : function( value ) {
-			// this method is far to large to warrant existing on its own, thus it should be split up 
-			// into logical parts, such as ( are arrays idnetical, are objects identical, so forth )
-			// must find more logical parts to divide in as its a bit trickey
+			
 			var self, first_value_type
 
 			self               = this
@@ -599,9 +625,10 @@
 				else_do : function ( loop ) {
 
 					if ( loop.into === true ) {
+
 						return self.are_these_two_values_the_same({
 							first  : loop.indexed,
-							second : value.second[loop.index]
+							second : sorted_second_array[loop.index]
 						})
 					}
 
@@ -641,7 +668,7 @@
   			return keys
   		},
 
-		get_object_from_array : function ( array ) {
+		create_object_from_key_and_value_array : function ( array ) {
 			return this.index_loop({
 				subject : array.key,
 				into    : {},
@@ -700,7 +727,7 @@
 			}
 		},
 
-		index_loop : function (loop) {
+		index_loop : function ( loop ) {
 
 			var self = this
 
@@ -715,15 +742,15 @@
 				if_done  : loop.if_done  || function (base_loop) {
 					return base_loop.into
 				},
-				else_do : function (base_loop) {
+				else_do : function ( base_loop ) {
 					return {
-						subject  : self.copy({ what : base_loop.subject }),
+						subject  : base_loop.subject,
 						into     : loop.else_do({
-							subject : self.copy({ what : base_loop.subject }),
+							subject : base_loop.subject,
 							index   : base_loop.start_at,
 							into    : base_loop.into,
-							indexed : self.copy({
-								what : base_loop.subject[base_loop.start_at]
+							indexed : self.copy_value({
+								value : base_loop.subject[base_loop.start_at]
 							})
 						}),
 						start_at : base_loop.start_at + 1,
@@ -788,14 +815,6 @@
 
 		copy_value : function ( copy ) {
 
-			if (
-				!copy.value                       ||
-				copy.value.constructor === String ||
-				copy.value.constructor === Number
-			) {
-				return copy.value
-			}
-
 			if ( copy.value.constructor === Array ) { 
 				return this.copy_array({
 					array : copy.value
@@ -807,6 +826,8 @@
 					object : copy.value
 				})
 			}
+
+			return copy.value
 		},
 
 		copy_object : function ( copy ) {

@@ -10,10 +10,10 @@ iterating, comparing, removing and adding. All of this whilst being stateless.
 - [inject_array](#inject_array)
 - [surject_array](#surject_array)
 - [biject_array](#biject_array)
-- [index_loop](#index_loop)
 - [inject_object](#inject_object)
 - [surject_object](#surject_object)
 - [biject_object](#biject_object)
+- [index_loop](#index_loop)
 - [flatten_object](#flatten_object)
 - [object_loop](#object_loop)
 - [does_array_contain_this_value](#does_array_contain_this_value)
@@ -141,3 +141,162 @@ biject_array({
 })
 // => [1,3,5,7,9,11]
 ```
+
+### inject_object
+
+Insert members into object and return result.
+
+```javascript
+inject_object({
+	object : {},
+	with   : {} || []
+})
+```
+
+**Examples :**
+
+```javascript
+inject_object({
+	object : { 
+		s : "some",
+		d : "some other"
+	},
+	with : { 
+		c : "another some"
+	}
+}) 
+// => {
+//	s : "some",
+//	d : "some other",
+//	c : "another some"
+// }
+
+inject_object({
+	object : { 
+		a : "some",
+		b : "some other"
+	},
+	with : ["a", "b", "c"]
+}) 
+// => {
+// 	"a" : "some",
+// 	"b" : "some other",
+// 	"0" : "a",
+// 	"1" : "b",
+// 	"2" : "c"
+// }
+```
+
+### surject_object
+
+Remove members of an object and return result.
+
+```javascript
+surject_object({
+	object : {},
+	with   : {} || []
+	by     : "value" || "key"
+})
+```
+
+**Examples**
+
+```javascript
+surject_object({
+	object : { 
+		"some"    : "name",
+		"another" : "value"
+	},
+	with   : ["some"],
+	by     : "key"
+}) 
+// => { "another" : "value" }
+
+surject_object({
+	object : { 
+		"some"     : "name", 
+		"another"  : "value",
+		"another2" : "values",
+	},
+	with   : ["name", "values"],
+	by     : "value"
+
+})
+// => { "another" : "value" }
+```
+
+### biject_object
+
+One to one maping of an object.
+
+```javascript
+surject_object({
+	object : {},
+	with   : function ( loop ) {
+		// console.log( loop ) =>
+		// {
+		// 	index : Number,
+		// 	into  : { 
+		// 		key   : Boolean || Array,
+		// 		value : Boolean || Array
+		// 	},
+		// 	key   : Value,
+		// 	value : Value
+		// }
+	}
+})
+```
+
+**Examples**
+
+```javascript
+biject_object({
+	object : {
+		"some"    : "here",
+		"another" : "over there",
+	},
+	with   : function ( loop ) {
+		return { 
+			key   : loop.key   +"some",
+			value : loop.value +"some",
+		}
+	}
+})
+// => {
+// 	"somesome"    : "heresome",
+// 	"anothersome" : "over theresome",
+// }
+
+biject_object({
+	object : {
+		"some"    : "here",
+		"another" : "over there",
+	},
+	with   : function ( loop ) {
+		return { 
+			value : loop.value +"some",
+		}
+	}
+})
+// => {
+// 	"some"    : "heresome",
+// 	"another" : "over theresome",
+// }
+
+biject_object({
+	object : {
+		"some"    : "here",
+		"another" : "over there",
+	},
+	with   : function ( loop ) {
+		return { 
+			key : loop.key + "some"
+		}
+	}
+})
+// => {
+// 	"somesome"    : "here",
+// 	"anothersome" : "over there",
+// }
+```
+
