@@ -1,0 +1,27 @@
+.wrap_text {
+	width         : 100%;
+	float         : left;
+	margin-bottom : $unit;
+}
+
+.regular_text {
+	text-transform: uppercase;
+}
+
+.imporant_text {
+	color : #23ff44;
+}
+
+.italic_text {
+	font-style: italic;
+}
+
+.title { 
+	width       : 100%;
+	float       : left;
+	color       : $blue;
+	font-weight : bold;
+	font-size   : 18px;
+	line-height : 18px;
+	padding     : $unit*2 0 0;
+}

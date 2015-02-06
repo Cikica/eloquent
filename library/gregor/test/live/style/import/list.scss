@@ -1,0 +1,33 @@
+.wrap_list {
+	width         : $unit*30;
+	float         : left;
+	padding       : 0px $unit;
+	margin-bottom : $unit;
+}
+
+.wrap_list_item {
+	width   : 100%;
+	float   : left;
+	padding : $unit;
+}
+
+.list_item_text_wrap {
+	float   : left;
+	display : inline-block;
+}
+
+.list_item_notation { 
+	float   : left;
+	display : inline-block;
+	width   : $unit*2;
+}
+
+.list_item_text {
+	float   : left;
+	display : inline-block;
+}
+
+.list_item_list {
+	float : left;
+	width : 100%;
+}

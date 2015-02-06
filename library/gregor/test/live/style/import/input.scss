@@ -1,0 +1,73 @@
+.wrap_input {
+	width         : 100%;
+	float         : left;
+	margin-bottom : $unit;
+}
+
+.input_base { 
+	font-family      : Arial;
+	font-size        : 14px;
+	line-height      : 18px;
+	width            : $unit*30;
+	padding          : $unit;
+	border           : 1px solid $medium_ink;
+	color            : $light;
+	background-color : $medium_ink;
+	float            : left;
+}
+
+.input_small {
+	@extend .input_base;
+}
+
+.input_large {
+	@extend .input_base;
+}
+
+.input_text_base { 
+	width          : $unit*30;
+	float          : left;
+	margin-top     : $unit;
+	clear          : both;
+	text-transform : uppercase;
+	font-weight    : bold;
+}
+
+.input_text_valid {
+	@extend .input_text_base;
+}
+
+.input_text_invalid { 
+	@extend .input_text_base;
+	font-style : italic;
+}
+
+.input_suggest_container { 
+	width : $unit*30;
+	float : left;
+	clear: both;
+}
+
+.input_suggest { 
+	width            : 100%;
+	float            : left;
+	background-color : $medium_ink;
+	color            : $light;
+	padding          : $unit;
+	cursor           : pointer;
+	&:hover { 
+		background-color: $ink;
+	}
+}
+
+.input_suggest_text { 
+	display : inline-block;
+	float   : left;
+	cursor  : pointer;
+}
+
+.input_suggest_text_match { 
+	@extend .input_suggest_text;
+	font-weight : bold;
+	color       : $blue;
+}

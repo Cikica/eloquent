@@ -1,0 +1,26 @@
+.radio_wrap {
+	float            : left;
+	clear            : both;
+	color            : $light;
+	margin           : $unit 0px;
+}
+
+.radio_base { 
+	width            : $unit*10;
+	padding          : $unit;
+	float            : left;
+	display          : inline-block;
+	cursor           : pointer;
+	background-color : $ink;
+	color            : $light;
+}
+
+.radio_item {
+	@extend .radio_base;
+	background-color : $ink;
+}
+
+.radio_item_selected {
+	@extend .radio_base;
+	background-color : $light_ink;
+}
